@@ -64,6 +64,85 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-command-line" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/27/mysql-command-line/" class="article-date">
+  <time datetime="2020-08-27T02:55:38.000Z" itemprop="datePublished">2020-08-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h2><p>查看慢查询是否开启<br><code>show variables like &#39;%slow_query_log%&#39;;</code><br>开启慢查询<br><code>set global slow_query_log = 1;</code><br>显示慢查询阈值(单位秒)<br><code>show variables like &#39;%long_query%&#39;;</code><br>设置慢查询阈值<br>注意:设置后需要重新打开mysql客户端才能到最新的值<br><code>set global long_query_time = 0.8;</code>  </p>
+<h2 id="死锁日志"><a href="#死锁日志" class="headerlink" title="死锁日志"></a>死锁日志</h2><p>查看死锁的日志是否开启<br><code>show variables like &quot;%innodb_print_all_deadlocks%&quot;;</code><br>开启记录死锁<br><code>set global innodb_print_all_deadlocks=1</code><br>查看死锁日志<br><code>show engine innodb status</code>  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckec844p00000bwoshvngb30s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="mysql-mysql-deadlock" class="article article-type-mysql" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/27/mysql-deadlock/" class="article-date">
+  <time datetime="2020-08-27T02:15:28.000Z" itemprop="datePublished">2020-08-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/27/mysql-deadlock/">deadlock</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>公司mysql库偶尔会出现deadlock问题<br>Error: Error: update <code>think_settlement_day</code> set <code>total_payment</code> = 7500, <code>update_time</code> = 1598383500 where <code>group_id</code> = ‘40168’ and <code>date_time</code> = ‘2020-08-25’ and <code>total_payment_type</code> = 0 - Deadlock found when trying to get lock; try restarting transaction</p>
+<h2 id="问题猜测"><a href="#问题猜测" class="headerlink" title="问题猜测"></a>问题猜测</h2><p>期初认为是由于多线程同时处理任务，出现并发更新的造成锁问题。<br>后确认业务逻辑未出现多线程处理，且报错来看是deadlock(死锁)，因此不是行锁更新问题。</p>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>##查看mysql官方文档对deadlock的说明<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html">deadlock</a><br><code>A deadlock is a situation where different transactions are unable to proceed because each holds a lock that the other needs. Because both transactions are waiting for a resource to become available, neither ever release the locks it holds.</code><br>相互持有锁造成的，当时能和问题直接建立联系，继续翻找资料。</p>
+<h2 id="查看死锁日志"><a href="#查看死锁日志" class="headerlink" title="查看死锁日志"></a>查看死锁日志</h2><p><code>show engine innodb status</code></p>
+<h2 id="分析sql语句"><a href="#分析sql语句" class="headerlink" title="分析sql语句"></a>分析sql语句</h2><p><code>EXPLAIN update </code>think_settlement_day<code>set</code>total_payment<code>= 7500,</code>update_time<code>= 1598383500 where</code>group_id<code>= &#39;40168&#39; and</code>date_time<code>= &#39;2020-08-25&#39; and</code>total_payment_type<code> = 0</code><br><img src="/images/WX20200827-110220.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckec844pc0001bwos0i8lfjpg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/08/27/hello-world/" class="article-date">
@@ -142,6 +221,14 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/27/mysql-deadlock/">deadlock</a>
+          </li>
         
           <li>
             <a href="/2020/08/27/hello-world/">Hello World</a>
