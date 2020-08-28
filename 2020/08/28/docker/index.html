@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>docker | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="docker安装12345678sudo apt-get updatesudo curl -sSL https:&#x2F;&#x2F;get.docker.com&#x2F; | sh#检查是否安装成功docker run hello-worldsudo curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;rele">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker">
+<meta property="og:url" content="http://yoursite.com/2020/08/28/docker/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="docker安装12345678sudo apt-get updatesudo curl -sSL https:&#x2F;&#x2F;get.docker.com&#x2F; | sh#检查是否安装成功docker run hello-worldsudo curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;rele">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-28T00:24:45.000Z">
+<meta property="article:modified_time" content="2020-08-28T00:27:08.651Z">
+<meta property="article:author" content="Li Hao">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-docker" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/28/docker/" class="article-date">
+  <time datetime="2020-08-28T00:24:45.000Z" itemprop="datePublished">2020-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      docker
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo curl -sSL https:&#x2F;&#x2F;get.docker.com&#x2F; | sh</span><br><span class="line"></span><br><span class="line">#检查是否安装成功</span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line">sudo curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.8.0&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod a+x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装镜像"><a href="#安装镜像" class="headerlink" title="安装镜像"></a>安装镜像</h3><h2 id="docker安装redis"><a href="#docker安装redis" class="headerlink" title="docker安装redis"></a>docker安装redis</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;opt&#x2F;redis&#x2F;data</span><br><span class="line">vim &#x2F;opt&#x2F;redis&#x2F;Dockerfile</span><br><span class="line">***************************</span><br><span class="line">FROM debian:jessie</span><br><span class="line"></span><br><span class="line"># add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added</span><br><span class="line">RUN groupadd -r redis &amp;&amp; useradd -r -g redis redis</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \</span><br><span class="line">                ca-certificates \</span><br><span class="line">                wget \</span><br><span class="line">        &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;*</span><br><span class="line"></span><br><span class="line"># grab gosu for easy step-down from root</span><br><span class="line">ENV GOSU_VERSION 1.7</span><br><span class="line">RUN set -x \</span><br><span class="line">        &amp;&amp; wget -O &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu &quot;https:&#x2F;&#x2F;github.com&#x2F;tianon&#x2F;gosu&#x2F;releases&#x2F;download&#x2F;$GOSU_VERSION&#x2F;gosu-$(dpkg --print-architecture)&quot; \</span><br><span class="line">        &amp;&amp; wget -O &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc &quot;https:&#x2F;&#x2F;github.com&#x2F;tianon&#x2F;gosu&#x2F;releases&#x2F;download&#x2F;$GOSU_VERSION&#x2F;gosu-$(dpkg --print-architecture).asc&quot; \</span><br><span class="line">        &amp;&amp; export GNUPGHOME&#x3D;&quot;$(mktemp -d)&quot; \</span><br><span class="line">        &amp;&amp; gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \</span><br><span class="line">        &amp;&amp; gpg --batch --verify &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu \</span><br><span class="line">        &amp;&amp; rm -r &quot;$GNUPGHOME&quot; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc \</span><br><span class="line">        &amp;&amp; chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu \</span><br><span class="line">        &amp;&amp; gosu nobody true</span><br><span class="line"></span><br><span class="line">ENV REDIS_VERSION 3.2.0</span><br><span class="line">ENV REDIS_DOWNLOAD_URL http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.2.0.tar.gz</span><br><span class="line">ENV REDIS_DOWNLOAD_SHA1 0c1820931094369c8cc19fc1be62f598bc5961ca</span><br><span class="line"></span><br><span class="line"># for redis-sentinel see: http:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;sentinel</span><br><span class="line">RUN buildDeps&#x3D;&#39;gcc libc6-dev make&#39; \</span><br><span class="line">        &amp;&amp; set -x \</span><br><span class="line">        &amp;&amp; apt-get update &amp;&amp; apt-get install -y $buildDeps --no-install-recommends \</span><br><span class="line">        &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;* \</span><br><span class="line">        &amp;&amp; wget -O redis.tar.gz &quot;$REDIS_DOWNLOAD_URL&quot; \</span><br><span class="line">        &amp;&amp; echo &quot;$REDIS_DOWNLOAD_SHA1 *redis.tar.gz&quot; | sha1sum -c - \</span><br><span class="line">        &amp;&amp; mkdir -p &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; tar -xzf redis.tar.gz -C &#x2F;usr&#x2F;src&#x2F;redis --strip-components&#x3D;1 \</span><br><span class="line">        &amp;&amp; rm redis.tar.gz \</span><br><span class="line">        &amp;&amp; make -C &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; make -C &#x2F;usr&#x2F;src&#x2F;redis install \</span><br><span class="line">        &amp;&amp; rm -r &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; apt-get purge -y --auto-remove $buildDeps</span><br><span class="line"></span><br><span class="line">RUN mkdir &#x2F;data &amp;&amp; chown redis:redis &#x2F;data</span><br><span class="line">VOLUME &#x2F;data</span><br><span class="line">WORKDIR &#x2F;data</span><br><span class="line"></span><br><span class="line">COPY docker-entrypoint.sh &#x2F;usr&#x2F;local&#x2F;bin&#x2F;</span><br><span class="line">ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</span><br><span class="line"></span><br><span class="line">EXPOSE 6379</span><br><span class="line">CMD [ &quot;redis-server&quot; ]</span><br><span class="line">***************************</span><br><span class="line">cd &#x2F;opt&#x2F;redis</span><br><span class="line">docker build . -t redis:3.2</span><br><span class="line"></span><br><span class="line">docker run --name redis -v &#x2F;work&#x2F;redis&#x2F;data:&#x2F;data  --net&#x3D;host -d redis  redis-server --appendonly yes</span><br></pre></td></tr></table></figure>
+<h2 id="docker安装mysql"><a href="#docker安装mysql" class="headerlink" title="docker安装mysql"></a>docker安装mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vim utf8mb4.cnf </span><br><span class="line">**********************************************************</span><br><span class="line">[client]</span><br><span class="line">default-character-set &#x3D; utf8mb4</span><br><span class="line">[mysql]</span><br><span class="line">default-character-set &#x3D; utf8mb4</span><br><span class="line">[mysqld]</span><br><span class="line">character-set-client-handshake &#x3D; FALSE  # 忽略客户端的字符集，使用服务器的设置</span><br><span class="line">character-set-server &#x3D; utf8mb4</span><br><span class="line">collation-server &#x3D; utf8mb4_unicode_ci</span><br><span class="line">**********************************************************</span><br><span class="line"></span><br><span class="line">vim Dockerfile </span><br><span class="line">**********************************************************</span><br><span class="line">FROM mysql:5.6</span><br><span class="line">COPY utf8mb4.cnf &#x2F;etc&#x2F;mysql&#x2F;conf.d&#x2F;</span><br><span class="line">**********************************************************</span><br><span class="line">docker build -t mysql_utf-8 .</span><br><span class="line">docker run --restart&#x3D;always -d -v &#x2F;work&#x2F;mysql:&#x2F;var&#x2F;lib&#x2F;mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD&#x3D;daochi12e --name mysql mysql_utf-8</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedi24it00017hosbj2l09bs" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/28/linux-config/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">linux-config</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/28/docker/">docker</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/28/linux-config/">linux-config</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/28/linux-command-line/">linux-command-line</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/27/mysql-deadlock/">deadlock</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Li Hao<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
