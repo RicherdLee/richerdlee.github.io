@@ -64,6 +64,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-延时时间轮" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" class="article-date">
+  <time datetime="2020-08-28T08:20:10.000Z" itemprop="datePublished">2020-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/">延时时间轮</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>公司项目中要求对事件做延迟处理，且延迟时间可配置。</p>
+<h2 id="原解决办法"><a href="#原解决办法" class="headerlink" title="原解决办法"></a>原解决办法</h2><p>事件放入队列，因为一些历史原因，被放在了redis队列中。由一主线程定时遍历队列，对于到期事件进行处理。<br>此方案是最容易想到和实现的，但它有着明显的错误</p>
+<ol>
+<li>每次都要遍历全部事件，并对事件判断是否到期</li>
+<li>若无序很可能会出现一个很久才要执行的事件被放在靠前位置</li>
+<li>只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事件由于本次循环还未结束无法处理(当然这可以通过多线程遍历，和子线程执行方式解决)</li>
+</ol>
+<h2 id="思考解决方案"><a href="#思考解决方案" class="headerlink" title="思考解决方案"></a>思考解决方案</h2><p>第一时间想到的是是否可将事件按不同执行时间段分开存放，非常类似与hash负载均衡算法。</p>
+<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的时间降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzfpve0005maos40hq2wwy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-docker" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/08/28/docker/" class="article-date">
@@ -93,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedi6cz70001bmos9yj60n1o" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedzfpv10001maos17d1gtlq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedi6czf0002bmosfo2c6iah" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedzfpv20002maos4kos8km2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -215,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedi6cyy0000bmos3rn2926u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedzfpuu0000maosgrir7xj9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedi6czi0003bmos0n6ierfa" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedzfpv40003maosc3mb9dyj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -297,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedi6czj0004bmos9grqeuw2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedzfpvd0004maos4jle7ijw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,6 +383,10 @@
       <ul>
         
           <li>
+            <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/">延时时间轮</a>
+          </li>
+        
+          <li>
             <a href="/2020/08/28/docker/">docker</a>
           </li>
         
@@ -351,10 +400,6 @@
         
           <li>
             <a href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/27/mysql-deadlock/">deadlock</a>
           </li>
         
       </ul>

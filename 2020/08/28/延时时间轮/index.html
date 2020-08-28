@@ -5,19 +5,21 @@
   
 
   
-  <title>mysql-command-line | Hexo</title>
+  <title>延时时间轮 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="慢查询查看慢查询是否开启show variables like &#39;%slow_query_log%&#39;;开启慢查询set global slow_query_log &#x3D; 1;显示慢查询阈值(单位秒)show variables like &#39;%long_query%&#39;;设置慢查询阈值注意:设置后需要重新打开mysql客户端才能到最新的值set global long_q">
+  <meta name="description" content="背景公司项目中要求对事件做延迟处理，且延迟时间可配置。 原解决办法事件放入队列，因为一些历史原因，被放在了redis队列中。由一主线程定时遍历队列，对于到期事件进行处理。此方案是最容易想到和实现的，但它有着明显的错误  每次都要遍历全部事件，并对事件判断是否到期 若无序很可能会出现一个很久才要执行的事件被放在靠前位置 只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql-command-line">
-<meta property="og:url" content="http://yoursite.com/2020/08/27/mysql-command-line/index.html">
+<meta property="og:title" content="延时时间轮">
+<meta property="og:url" content="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="慢查询查看慢查询是否开启show variables like &#39;%slow_query_log%&#39;;开启慢查询set global slow_query_log &#x3D; 1;显示慢查询阈值(单位秒)show variables like &#39;%long_query%&#39;;设置慢查询阈值注意:设置后需要重新打开mysql客户端才能到最新的值set global long_q">
+<meta property="og:description" content="背景公司项目中要求对事件做延迟处理，且延迟时间可配置。 原解决办法事件放入队列，因为一些历史原因，被放在了redis队列中。由一主线程定时遍历队列，对于到期事件进行处理。此方案是最容易想到和实现的，但它有着明显的错误  每次都要遍历全部事件，并对事件判断是否到期 若无序很可能会出现一个很久才要执行的事件被放在靠前位置 只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-08-27T02:55:38.000Z">
-<meta property="article:modified_time" content="2020-08-27T03:01:25.341Z">
+<meta property="og:image" content="http://yoursite.com/images/WX20200828-163543.png">
+<meta property="article:published_time" content="2020-08-28T08:20:10.000Z">
+<meta property="article:modified_time" content="2020-08-28T08:36:49.556Z">
 <meta property="article:author" content="Li Hao">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/WX20200828-163543.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -66,10 +68,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-mysql-command-line" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-延时时间轮" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/08/27/mysql-command-line/" class="article-date">
-  <time datetime="2020-08-27T02:55:38.000Z" itemprop="datePublished">2020-08-27</time>
+    <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" class="article-date">
+  <time datetime="2020-08-28T08:20:10.000Z" itemprop="datePublished">2020-08-28</time>
 </a>
     
   </div>
@@ -80,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      mysql-command-line
+      延时时间轮
     </h1>
   
 
@@ -88,13 +90,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h2><p>查看慢查询是否开启<br><code>show variables like &#39;%slow_query_log%&#39;;</code><br>开启慢查询<br><code>set global slow_query_log = 1;</code><br>显示慢查询阈值(单位秒)<br><code>show variables like &#39;%long_query%&#39;;</code><br>设置慢查询阈值<br>注意:设置后需要重新打开mysql客户端才能到最新的值<br><code>set global long_query_time = 0.8;</code>  </p>
-<h2 id="死锁日志"><a href="#死锁日志" class="headerlink" title="死锁日志"></a>死锁日志</h2><p>查看死锁的日志是否开启<br><code>show variables like &quot;%innodb_print_all_deadlocks%&quot;;</code><br>开启记录死锁<br><code>set global innodb_print_all_deadlocks=1</code><br>查看死锁日志<br><code>show engine innodb status</code>  </p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>公司项目中要求对事件做延迟处理，且延迟时间可配置。</p>
+<h2 id="原解决办法"><a href="#原解决办法" class="headerlink" title="原解决办法"></a>原解决办法</h2><p>事件放入队列，因为一些历史原因，被放在了redis队列中。由一主线程定时遍历队列，对于到期事件进行处理。<br>此方案是最容易想到和实现的，但它有着明显的错误</p>
+<ol>
+<li>每次都要遍历全部事件，并对事件判断是否到期</li>
+<li>若无序很可能会出现一个很久才要执行的事件被放在靠前位置</li>
+<li>只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事件由于本次循环还未结束无法处理(当然这可以通过多线程遍历，和子线程执行方式解决)</li>
+</ol>
+<h2 id="思考解决方案"><a href="#思考解决方案" class="headerlink" title="思考解决方案"></a>思考解决方案</h2><p>第一时间想到的是是否可将事件按不同执行时间段分开存放，非常类似与hash负载均衡算法。</p>
+<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的时间降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedzfpv40003maosc3mb9dyj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzfpve0005maos40hq2wwy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -103,19 +112,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2020/08/28/linux-command-line/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          linux-command-line
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/08/27/mysql-deadlock/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2020/08/28/docker/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">deadlock</div>
+      <div class="article-nav-title">docker</div>
     </a>
   
 </nav>
