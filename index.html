@@ -93,7 +93,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedi47l1000095os584y745h" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedi6cz70001bmos9yj60n1o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +146,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedi47ld000395os5rnm1tld" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedi6czf0002bmosfo2c6iah" class="article-share-link">Share</a>
       
       
     </footer>
@@ -215,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedi47lc000295os0w2z79y1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedi6cyy0000bmos3rn2926u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedi47le000495osfhmx33wl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedi6czi0003bmos0n6ierfa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -287,7 +287,7 @@
       
         <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>公司mysql库偶尔会出现deadlock问题<br>Error: Error: update <code>think_settlement_day</code> set <code>total_payment</code> = 7500, <code>update_time</code> = 1598383500 where <code>group_id</code> = ‘40168’ and <code>date_time</code> = ‘2020-08-25’ and <code>total_payment_type</code> = 0 - Deadlock found when trying to get lock; try restarting transaction</p>
 <h2 id="问题猜测"><a href="#问题猜测" class="headerlink" title="问题猜测"></a>问题猜测</h2><p>期初认为是由于多线程同时处理任务，出现并发更新的造成锁问题。<br>后确认业务逻辑未出现多线程处理，且报错来看是deadlock(死锁)，因此不是行锁更新问题。</p>
-<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><h2 id="查看mysql官方文档对deadlock的说明"><a href="#查看mysql官方文档对deadlock的说明" class="headerlink" title="查看mysql官方文档对deadlock的说明"></a>查看mysql官方文档对deadlock的说明</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html">Deadlocks in InnoDB</a><br><code>A deadlock is a situation where different transactions are unable to proceed because each holds a lock that the other needs. Because both transactions are waiting for a resource to become available, neither ever release the locks it holds.</code><br>相互持有锁造成的，当时能和问题直接建立联系，继续翻找资料。<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks-handling.html">How to Minimize and Handle Deadlocks</a><br><code>If you use locking reads (SELECT ... FOR UPDATE or SELECT ... LOCK IN SHARE MODE), try using a lower isolation level such as READ COMMITTED.</code><br>读锁(后续再详细学习下innodb的锁)，简单来说就是在对于增删改操作，<code>先将数据读取出来，再对数据进行修改</code>  </p>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><h2 id="查看mysql官方文档对deadlock的说明"><a href="#查看mysql官方文档对deadlock的说明" class="headerlink" title="查看mysql官方文档对deadlock的说明"></a>查看mysql官方文档对deadlock的说明</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html">Deadlocks in InnoDB</a><br><code>A deadlock is a situation where different transactions are unable to proceed because each holds a lock that the other needs. Because both transactions are waiting for a resource to become available, neither ever release the locks it holds.</code><br>相互持有锁造成的，当时没能和问题直接建立联系，继续翻找资料。<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks-handling.html">How to Minimize and Handle Deadlocks</a><br><code>If you use locking reads (SELECT ... FOR UPDATE or SELECT ... LOCK IN SHARE MODE), try using a lower isolation level such as READ COMMITTED.</code><br>读锁(后续再详细学习下innodb的锁)，简单来说就是在对于增删改操作，<code>先将数据读取出来，再对数据进行修改</code>  </p>
 <h2 id="查看死锁日志"><a href="#查看死锁日志" class="headerlink" title="查看死锁日志"></a>查看死锁日志</h2><p><code>show engine innodb status</code></p>
 <h2 id="分析sql语句"><a href="#分析sql语句" class="headerlink" title="分析sql语句"></a>分析sql语句</h2><p><code>EXPLAIN update </code>think_settlement_day<code>set</code>total_payment<code>= 7500,</code>update_time<code>= 1598383500 where</code>group_id<code>= &#39;40168&#39; and</code>date_time<code>= &#39;2020-08-25&#39; and</code>total_payment_type<code> = 0</code><br><img src="/images/WX20200827-110220.png"><br>从mysql5.1开始，引入了 index merge 优化技术，对同一个表可以使用多个索引分别进行条件扫描。<br><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.7/en/index-merge-optimization.html">index merge</a><br><code>The Index Merge access method retrieves rows with multiple range scans and merges their results into one. This access method merges index scans from a single table only, not scans across multiple tables. The merge can produce unions, intersections, or unions-of-intersections of its underlying scans.</code><br>简单来说就是对一张表上做多个索引扫表，形成交集索引</p>
 <h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>读锁锁住了一些本次不会更新的记录，且恰恰是另外一条update要更新的语句，造成deadlock</p>
@@ -297,56 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedi47lf000595os8rflhqtb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/08/27/hello-world/" class="article-date">
-  <time datetime="2020-08-27T01:33:21.727Z" itemprop="datePublished">2020-08-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/27/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/hello-world/" data-id="ckedi47l8000195os431fej69" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedi6czj0004bmos9grqeuw2" class="article-share-link">Share</a>
       
       
     </footer>
