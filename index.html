@@ -94,12 +94,12 @@
 <li>只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事件由于本次循环还未结束无法处理(当然这可以通过多线程遍历，和子线程执行方式解决)</li>
 </ol>
 <h2 id="思考解决方案"><a href="#思考解决方案" class="headerlink" title="思考解决方案"></a>思考解决方案</h2><p>第一时间想到的是是否可将事件按不同执行时间段分开存放，非常类似与hash负载均衡算法。</p>
-<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的时间降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
+<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的事件降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzfpve0005maos40hq2wwy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzxob80005weosgpokhm7q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -138,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedzfpv10001maos17d1gtlq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedzxoaw0000weos29y362h9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -191,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedzfpv20002maos4kos8km2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedzxob50002weose1ba126d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -260,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedzfpuu0000maosgrir7xj9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedzxob30001weoseaiy4day" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedzfpv40003maosc3mb9dyj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedzxob60003weos7zleh3lg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -342,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedzfpvd0004maos4jle7ijw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedzxob70004weos2bwd9v4h" class="article-share-link">Share</a>
       
       
     </footer>

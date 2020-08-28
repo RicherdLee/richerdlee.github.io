@@ -16,7 +16,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/images/WX20200828-163543.png">
 <meta property="article:published_time" content="2020-08-28T08:20:10.000Z">
-<meta property="article:modified_time" content="2020-08-28T08:36:49.556Z">
+<meta property="article:modified_time" content="2020-08-28T08:50:45.184Z">
 <meta property="article:author" content="Li Hao">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/WX20200828-163543.png">
@@ -98,12 +98,12 @@
 <li>只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事件由于本次循环还未结束无法处理(当然这可以通过多线程遍历，和子线程执行方式解决)</li>
 </ol>
 <h2 id="思考解决方案"><a href="#思考解决方案" class="headerlink" title="思考解决方案"></a>思考解决方案</h2><p>第一时间想到的是是否可将事件按不同执行时间段分开存放，非常类似与hash负载均衡算法。</p>
-<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的时间降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
+<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的事件降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzfpve0005maos40hq2wwy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzxob80005weosgpokhm7q" class="article-share-link">Share</a>
       
       
     </footer>
