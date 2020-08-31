@@ -64,6 +64,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-jenkins部署oss" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" class="article-date">
+  <time datetime="2020-08-31T11:01:51.000Z" itemprop="datePublished">2020-08-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/">jenkins部署oss</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>公司业务需求有一部分动态js代码会频繁更新，为了避免每次更新都重新部署，则通过将js代码放入到oss上。但也遇到了以下几个问题  </p>
+<ol>
+<li>手动上传。  </li>
+<li>测试与正式环境拆分不便利，每次都是在手动处理。  </li>
+</ol>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>通过Jenkins部署和oss的命令行工具ossutil来完成</p>
+<h3 id="需解决问题"><a href="#需解决问题" class="headerlink" title="需解决问题"></a>需解决问题</h3><ol>
+<li>区分是文件部署还是上传静态文件</li>
+<li>通过shell对oss的静态文件引用做替换，以达到不同环境引用不同地址的文件<h4 id="区分静态文件"><a href="#区分静态文件" class="headerlink" title="区分静态文件"></a>区分静态文件</h4>通过git命令和配置文件的配合<br>git获取本次提交的文件列表，与配置文件中的src_arr比对，如果命中则上传至对应的des_arr目录  </li>
+</ol>
+<p><code>注：若git发现没有新文件，则有可能是上次部署失败，即已拉取新文件，但没有执行后续上传，此时可能通过判断是否有新文件，如果没有则对比上次提交；但依旧无法避免上次提交失败，本次又有新提交的时候，导致上次静态文件更新没有上传，此问题还需有新解决方案</code></p>
+<p>配置文件格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#待上传文件目录  </span><br><span class="line">src_arr&#x3D;(src&#x2F;static&#x2F;img src&#x2F;static&#x2F;js)  </span><br><span class="line"></span><br><span class="line">#上传路径  </span><br><span class="line">des_arr&#x3D;(tester_beta&#x2F;static&#x2F;img tester_beta&#x2F;static&#x2F;img)  </span><br><span class="line">#应用路径  </span><br><span class="line">src_path&#x3D;()  </span><br><span class="line"></span><br><span class="line">#替换路径  </span><br><span class="line">des_path&#x3D;()  </span><br></pre></td></tr></table></figure>
+
+<p>执行脚本  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line">  #echo $file</span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">    for src in $src_arr</span><br><span class="line">    do</span><br><span class="line">       #echo $src</span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      #echo $f</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      if [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">          echo $file</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line"></span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>注:脚本开头使用的是#!/bin/bash -xe，处理#!/bin/bash 还必须有-xe，否则Jenkins不识别source，if等语法，至于为什么还不懂</code></p>
+<h4 id="不同环境使用不同地址的文件"><a href="#不同环境使用不同地址的文件" class="headerlink" title="不同环境使用不同地址的文件"></a>不同环境使用不同地址的文件</h4><p>  例如<br>   <code>   本地开发直接引用本地文件    beta测试引用的是oss beta地址      正式环境引用的是oss 正式地址   </code><br>   前提要求前端对静态页面的引用路径做统一格式处理，设定全局变量path，脚本会根据环境替换此path</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckeifoch0000175osgku62r1n" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-延时时间轮" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" class="article-date">
@@ -99,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckedzxob80005weosgpokhm7q" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckeifocha000675osentv9rds" class="article-share-link">Share</a>
       
       
     </footer>
@@ -138,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckedzxoaw0000weos29y362h9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckeifocgs000075os0g4tdlqh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -191,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckedzxob50002weose1ba126d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckeifoch3000375oshq6f3y9q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -260,7 +315,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckedzxob30001weoseaiy4day" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckeifoch2000275osf53z8ihi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +353,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckedzxob60003weos7zleh3lg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckeifoch4000475osgzb0d5zl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -342,7 +397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckedzxob70004weos2bwd9v4h" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckeifoch9000575ose60gbg7x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -383,6 +438,10 @@
       <ul>
         
           <li>
+            <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/">jenkins部署oss</a>
+          </li>
+        
+          <li>
             <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/">延时时间轮</a>
           </li>
         
@@ -396,10 +455,6 @@
         
           <li>
             <a href="/2020/08/28/linux-command-line/">linux-command-line</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
           </li>
         
       </ul>
