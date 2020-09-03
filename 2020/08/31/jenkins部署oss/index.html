@@ -15,7 +15,7 @@
 <meta property="og:description" content="需求背景公司业务需求有一部分动态js代码会频繁更新，为了避免每次更新都重新部署，则通过将js代码放入到oss上。但也遇到了以下几个问题    手动上传。   测试与正式环境拆分不便利，每次都是在手动处理。    解决方案通过Jenkins部署和oss的命令行工具ossutil来完成 需解决问题 区分是文件部署还是上传静态文件 通过shell对oss的静态文件引用做替换，以达到不同环境引用不同地址的">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-31T11:01:51.000Z">
-<meta property="article:modified_time" content="2020-08-31T11:22:24.814Z">
+<meta property="article:modified_time" content="2020-09-01T00:34:35.775Z">
 <meta property="article:author" content="Li Hao">
 <meta name="twitter:card" content="summary">
   
@@ -103,7 +103,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#待上传文件目录  </span><br><span class="line">src_arr&#x3D;(src&#x2F;static&#x2F;img src&#x2F;static&#x2F;js)  </span><br><span class="line"></span><br><span class="line">#上传路径  </span><br><span class="line">des_arr&#x3D;(tester_beta&#x2F;static&#x2F;img tester_beta&#x2F;static&#x2F;img)  </span><br><span class="line">#应用路径  </span><br><span class="line">src_path&#x3D;()  </span><br><span class="line"></span><br><span class="line">#替换路径  </span><br><span class="line">des_path&#x3D;()  </span><br></pre></td></tr></table></figure>
 
 <p>执行脚本  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line">  #echo $file</span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">    for src in $src_arr</span><br><span class="line">    do</span><br><span class="line">       #echo $src</span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      #echo $f</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      if [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">          echo $file</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line"></span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">src_arr_len&#x3D;$&#123;#src_arr[@]&#125;</span><br><span class="line"></span><br><span class="line">des_arr_len&#x3D;$&#123;#des_arr[@]&#125;</span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line"></span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">	</span><br><span class="line">    for ((i&#x3D;0;i&lt;$src_arr_len;i++))</span><br><span class="line">    do</span><br><span class="line">      </span><br><span class="line">      src&#x3D;$&#123;src_arr[i]&#125;</span><br><span class="line">      des&#x3D;$&#123;des_arr[i]&#125;</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      </span><br><span class="line">      if [[ -z &quot;$f&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      elif [[ -z &quot;$src&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      elif [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">        $&#123;JENKINS_HOME&#125;&#x2F;ossutil --config-file&#x3D;$&#123;JENKINS_HOME&#125;&#x2F;oss_yunhe_static cp -f $file $des</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line">      </span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p><code>注:脚本开头使用的是#!/bin/bash -xe，处理#!/bin/bash 还必须有-xe，否则Jenkins不识别source，if等语法，至于为什么还不懂</code></p>
 <h4 id="不同环境使用不同地址的文件"><a href="#不同环境使用不同地址的文件" class="headerlink" title="不同环境使用不同地址的文件"></a>不同环境使用不同地址的文件</h4><p>  例如<br>   <code>   本地开发直接引用本地文件    beta测试引用的是oss beta地址      正式环境引用的是oss 正式地址   </code><br>   前提要求前端对静态页面的引用路径做统一格式处理，设定全局变量path，脚本会根据环境替换此path</p>
@@ -111,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckeifoch0000175osgku62r1n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckemf8m0x0002mxos0gk7gxqt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -119,6 +119,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          java程序线上cpu飙高(未完)
+        
+      </div>
+    </a>
   
   
     <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" id="article-nav-older" class="article-nav-link-wrap">
@@ -147,7 +156,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -158,6 +167,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/">java程序线上cpu飙高(未完)</a>
+          </li>
         
           <li>
             <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/">jenkins部署oss</a>
@@ -173,10 +186,6 @@
         
           <li>
             <a href="/2020/08/28/linux-config/">linux-config</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/linux-command-line/">linux-command-line</a>
           </li>
         
       </ul>

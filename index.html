@@ -64,6 +64,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-java程序线上cpu飙高" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" class="article-date">
+  <time datetime="2020-09-01T01:46:27.000Z" itemprop="datePublished">2020-09-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/">java程序线上cpu飙高(未完)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>线上系统出现8核cpu没核都达到100%，但是服务器并没有出现卡顿现象</p>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>通过top命令找到cpu高的pid<br>再通过top -Hp pid得到占用cpu高的对应线程，将其转为16进制tid<br>通过jstack pid|grep tid -C 10获取到占用cpu高的代码段  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pool-<span class="number">9941</span>-thread-<span class="number">1</span><span class="string">&quot; #263208 prio=5 os_prio=0 tid=0x00007f565405b000 nid=0x1f78 runnable [0x00007f55502aa000]</span></span><br><span class="line"><span class="string">   java.lang.Thread.State: RUNNABLE</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService.keywordHourDownloadBaidu(AdjustPricesService.java:455)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService$$FastClassBySpringCGLIB$$7a16392f.invoke(&lt;generated&gt;)</span></span><br><span class="line"><span class="string">	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)</span></span><br><span class="line"><span class="string">	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:684)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService$$EnhancerBySpringCGLIB$$f00dcb55.keywordHourDownloadBaidu(&lt;generated&gt;)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.AdjustPricesLogic.downloadFile(AdjustPricesLogic.java:103)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.SyncDispatchLogic.lambda$adjustPriceDispatch$0(SyncDispatchLogic.java:203)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.SyncDispatchLogic$$Lambda$870/383155331.call(Unknown Source)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.FutureTask.run(FutureTask.java:266)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)</span></span><br><span class="line"><span class="string">	at java.lang.Thread.run(Thread.java:748)</span></span><br><span class="line"><span class="string">	</span></span><br></pre></td></tr></table></figure>
+
+<p>发现是一个循环造成</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (flag) &#123;</span><br><span class="line">   <span class="keyword">if</span> (index &lt; <span class="number">50</span>) &#123;</span><br><span class="line">               String status = iSemHandler.getReportStatus(account, reportId);</span><br><span class="line">               <span class="keyword">if</span> (status.equals(<span class="string">&quot;3&quot;</span>)) &#123;</span><br><span class="line">                   filePath = iSemHandler.getReportFilePath(account, reportId);</span><br><span class="line">                   flag = <span class="keyword">false</span>;</span><br><span class="line">               &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                   index += <span class="number">1</span>;</span><br><span class="line">                   <span class="keyword">try</span> &#123;</span><br><span class="line">                       Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">                   &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                       log.error(e.getMessage());</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<p>抛开代码优雅程度不说，此代码的意图在于不断重试获取响应，每次重试无响应后sleep3秒。<br>while死循环确实会造成cpu飙高，但是加入了Thread.sleep，释放cpu资源，但是不释放锁，就不会造成cpu飙高，与当前现象似乎不一致。<br>继续分析jstack，发现出现此代码段的地方总共有37个。那是否是由于不断切换线程造成cpu使用过高呢？开始追代码了  </p>
+<h2 id="问题定位，代码追踪"><a href="#问题定位，代码追踪" class="headerlink" title="问题定位，代码追踪"></a>问题定位，代码追踪</h2><p>使用了单线程池，结合现象想到了是否由于线程未释放导致出现了37个线程呢？  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">Future&lt;String&gt; future = executorService.submit(task);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    String s = future.get(<span class="number">10</span>, TimeUnit.MINUTES);</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + s);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException | TimeoutException e) &#123;</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + e.getMessage());</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    executorService.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器命名cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
+<p>由于服务被同事重启了，为拿到内存信息，只能等再次出现此问题的时候继续定位。<br><font color=b size=6>未完待续。。。。  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckemf8m0v0001mxos0tfwb3v1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-jenkins部署oss" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" class="article-date">
@@ -101,7 +150,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#待上传文件目录  </span><br><span class="line">src_arr&#x3D;(src&#x2F;static&#x2F;img src&#x2F;static&#x2F;js)  </span><br><span class="line"></span><br><span class="line">#上传路径  </span><br><span class="line">des_arr&#x3D;(tester_beta&#x2F;static&#x2F;img tester_beta&#x2F;static&#x2F;img)  </span><br><span class="line">#应用路径  </span><br><span class="line">src_path&#x3D;()  </span><br><span class="line"></span><br><span class="line">#替换路径  </span><br><span class="line">des_path&#x3D;()  </span><br></pre></td></tr></table></figure>
 
 <p>执行脚本  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line">  #echo $file</span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">    for src in $src_arr</span><br><span class="line">    do</span><br><span class="line">       #echo $src</span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      #echo $f</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      if [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">          echo $file</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line"></span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">src_arr_len&#x3D;$&#123;#src_arr[@]&#125;</span><br><span class="line"></span><br><span class="line">des_arr_len&#x3D;$&#123;#des_arr[@]&#125;</span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line"></span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">	</span><br><span class="line">    for ((i&#x3D;0;i&lt;$src_arr_len;i++))</span><br><span class="line">    do</span><br><span class="line">      </span><br><span class="line">      src&#x3D;$&#123;src_arr[i]&#125;</span><br><span class="line">      des&#x3D;$&#123;des_arr[i]&#125;</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      </span><br><span class="line">      if [[ -z &quot;$f&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      elif [[ -z &quot;$src&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      elif [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">        $&#123;JENKINS_HOME&#125;&#x2F;ossutil --config-file&#x3D;$&#123;JENKINS_HOME&#125;&#x2F;oss_yunhe_static cp -f $file $des</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line">      </span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p><code>注:脚本开头使用的是#!/bin/bash -xe，处理#!/bin/bash 还必须有-xe，否则Jenkins不识别source，if等语法，至于为什么还不懂</code></p>
 <h4 id="不同环境使用不同地址的文件"><a href="#不同环境使用不同地址的文件" class="headerlink" title="不同环境使用不同地址的文件"></a>不同环境使用不同地址的文件</h4><p>  例如<br>   <code>   本地开发直接引用本地文件    beta测试引用的是oss beta地址      正式环境引用的是oss 正式地址   </code><br>   前提要求前端对静态页面的引用路径做统一格式处理，设定全局变量path，脚本会根据环境替换此path</p>
@@ -109,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckeifoch0000175osgku62r1n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckemf8m0x0002mxos0gk7gxqt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -154,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckeifocha000675osentv9rds" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckemf8m130007mxos7xjv4h0m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -193,7 +242,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckeifocgs000075os0g4tdlqh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckemf8m0m0000mxos2xigcz2m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckeifoch3000375oshq6f3y9q" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckemf8m100004mxosbwbx0y84" class="article-share-link">Share</a>
       
       
     </footer>
@@ -315,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckeifoch2000275osf53z8ihi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckemf8m0z0003mxos4sjkeew8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -353,7 +402,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckeifoch4000475osgzb0d5zl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckemf8m110005mxosb13jak6p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -397,7 +446,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckeifoch9000575ose60gbg7x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckemf8m120006mxosbrft7m4p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -425,7 +474,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -436,6 +485,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/">java程序线上cpu飙高(未完)</a>
+          </li>
         
           <li>
             <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/">jenkins部署oss</a>
@@ -451,10 +504,6 @@
         
           <li>
             <a href="/2020/08/28/linux-config/">linux-config</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/linux-command-line/">linux-command-line</a>
           </li>
         
       </ul>
