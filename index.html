@@ -64,6 +64,46 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream问题排查" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="article-date">
+  <time datetime="2020-09-11T06:13:32.000Z" itemprop="datePublished">2020-09-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>线上nginx偶尔会出现<code>upstream prematurely closed connection while reading response header from upstream</code><br>即请求被上游服务关闭了。<br>查看nginx配置可发现配置了长连接。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keepalive <span class="number">16</span>;</span><br></pre></td></tr></table></figure>
+
+<p>nginx长连接是指，每个work建立一个http连接池，避免每个请求都建立socket连接使用完毕后释放造成系统调用的浪费。此类长连接在请求完毕后归还连接池。这个长连接的保持时间是有keepalive_timeout设置的，即连接超过这个时长，会被释放掉。<br>那么问题基本就定位到，<font size=6> 恰好一次请求由于时间过长，正好在其返回结果前连接被释放掉了。</font><br><font color=red>那么就有一个问题，当设定了长连接了，就会有一定概率致使某次请求恰好在连接释放后才能有返回，那不是一定会有这个问题存在么？所以是在并发不大的情况下，不需要开启长连接</font><br>最终暂时提高了keepalive_timeout的时长，减少此现象出现的概率，单本质上并未解决。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" data-id="ckexuug1800007sosesj63wx8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-java程序线上cpu飙高" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" class="article-date">
@@ -97,13 +137,13 @@
 <h2 id="问题定位，代码追踪"><a href="#问题定位，代码追踪" class="headerlink" title="问题定位，代码追踪"></a>问题定位，代码追踪</h2><p>使用了单线程池，结合现象想到了是否由于线程未释放导致出现了37个线程呢？  </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">Future&lt;String&gt; future = executorService.submit(task);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    String s = future.get(<span class="number">10</span>, TimeUnit.MINUTES);</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + s);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException | TimeoutException e) &#123;</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + e.getMessage());</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    executorService.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器命名cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
+<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器明明cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
 <p>由于服务被同事重启了，为拿到内存信息，只能等再次出现此问题的时候继续定位。<br><font color=b size=6>未完待续。。。。  </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckemf8m0v0001mxos0tfwb3v1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckexuug1k00027sos0uawc1g7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +198,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckemf8m0x0002mxos0gk7gxqt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckexuug1l00037sos82b63ec8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -203,7 +243,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckemf8m130007mxos7xjv4h0m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckexuug1s00087sos09f6dz6d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -242,7 +282,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckemf8m0m0000mxos2xigcz2m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckexuug1i00017soshvo191vp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -295,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckemf8m100004mxosbwbx0y84" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckexuug1n00057sos6zku2xyc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -364,7 +404,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckemf8m0z0003mxos4sjkeew8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckexuug1m00047sos9k1j6swg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -402,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckemf8m110005mxosb13jak6p" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckexuug1p00067sosa3mghh70" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,7 +486,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckemf8m120006mxosbrft7m4p" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckexuug1r00077soshtu8hd03" class="article-share-link">Share</a>
       
       
     </footer>
@@ -487,6 +527,10 @@
       <ul>
         
           <li>
+            <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
+          </li>
+        
+          <li>
             <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/">java程序线上cpu飙高(未完)</a>
           </li>
         
@@ -500,10 +544,6 @@
         
           <li>
             <a href="/2020/08/28/docker/">docker</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/linux-config/">linux-config</a>
           </li>
         
       </ul>

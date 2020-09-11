@@ -15,7 +15,7 @@
 <meta property="og:description" content="线上系统出现8核cpu没核都达到100%，但是服务器并没有出现卡顿现象 问题定位通过top命令找到cpu高的pid再通过top -Hp pid得到占用cpu高的对应线程，将其转为16进制tid通过jstack pid|grep tid -C 10获取到占用cpu高的代码段   123456789101112131415pool-9941-thread-1&quot; #263208 prio&#x3D;5">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-09-01T01:46:27.000Z">
-<meta property="article:modified_time" content="2020-09-03T06:20:34.571Z">
+<meta property="article:modified_time" content="2020-09-03T11:42:38.336Z">
 <meta property="article:author" content="Li Hao">
 <meta name="twitter:card" content="summary">
   
@@ -99,13 +99,13 @@
 <h2 id="问题定位，代码追踪"><a href="#问题定位，代码追踪" class="headerlink" title="问题定位，代码追踪"></a>问题定位，代码追踪</h2><p>使用了单线程池，结合现象想到了是否由于线程未释放导致出现了37个线程呢？  </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">Future&lt;String&gt; future = executorService.submit(task);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    String s = future.get(<span class="number">10</span>, TimeUnit.MINUTES);</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + s);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException | TimeoutException e) &#123;</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + e.getMessage());</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    executorService.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器命名cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
+<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器明明cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
 <p>由于服务被同事重启了，为拿到内存信息，只能等再次出现此问题的时候继续定位。<br><font color=b size=6>未完待续。。。。  </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckemf8m0v0001mxos0tfwb3v1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckexuug1k00027sos0uawc1g7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -113,6 +113,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Nginx upstream prematurely closed connection while reading response header from upstream问题排查
+        
+      </div>
+    </a>
   
   
     <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" id="article-nav-older" class="article-nav-link-wrap">
@@ -154,6 +163,10 @@
       <ul>
         
           <li>
+            <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
+          </li>
+        
+          <li>
             <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/">java程序线上cpu飙高(未完)</a>
           </li>
         
@@ -167,10 +180,6 @@
         
           <li>
             <a href="/2020/08/28/docker/">docker</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/linux-config/">linux-config</a>
           </li>
         
       </ul>
