@@ -64,6 +64,89 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-zabbix" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/10/10/zabbix/" class="article-date">
+  <time datetime="2020-10-10T01:08:37.000Z" itemprop="datePublished">2020-10-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/10/zabbix/">zabbix</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="docker部署zabbix-server"><a href="#docker部署zabbix-server" class="headerlink" title="docker部署zabbix-server"></a>docker部署zabbix-server</h1><h2 id="部署MySQL数据库"><a href="#部署MySQL数据库" class="headerlink" title="部署MySQL数据库"></a>部署MySQL数据库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mysql-server -t \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -d mysql:5.7  \</span><br><span class="line">--character-set-server&#x3D;utf8 --collation-server&#x3D;utf8_bin</span><br></pre></td></tr></table></figure>
+<h2 id="部署zabbix-server"><a href="#部署zabbix-server" class="headerlink" title="部署zabbix-server"></a>部署zabbix-server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-server-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      -p 10051:10051 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-server-mysql:latest</span><br></pre></td></tr></table></figure>
+<h2 id="部署web-nginx-连接到zabbix和mysql"><a href="#部署web-nginx-连接到zabbix和mysql" class="headerlink" title="部署web nginx 连接到zabbix和mysql"></a>部署web nginx 连接到zabbix和mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-web-nginx-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      --link zabbix-server-mysql:zabbix-server \</span><br><span class="line">      -p 8080:80 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-web-nginx-mysql:latest</span><br></pre></td></tr></table></figure>
+
+<h1 id="zabbix-agent安装"><a href="#zabbix-agent安装" class="headerlink" title="zabbix-agent安装"></a>zabbix-agent安装</h1><h2 id="添加zabbix-agent-Repository-Ubuntu-16-04"><a href="#添加zabbix-agent-Repository-Ubuntu-16-04" class="headerlink" title="添加zabbix-agent Repository(Ubuntu 16.04)"></a>添加zabbix-agent Repository(Ubuntu 16.04)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.0&#x2F;ubuntu&#x2F;pool&#x2F;main&#x2F;z&#x2F;zabbix-release&#x2F;zabbix-release_4.0-3+xenial_all.deb </span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -i zabbix-release_4.0-3+xenial_all.deb</span><br></pre></td></tr></table></figure>
+<h2 id="安装zabbix-agent"><a href="#安装zabbix-agent" class="headerlink" title="安装zabbix-agent"></a>安装zabbix-agent</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install  </span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">LogFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.log </span><br><span class="line"></span><br><span class="line">PidFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.pid</span><br><span class="line"></span><br><span class="line">Server&#x3D;****** #server端ip</span><br><span class="line"></span><br><span class="line">ListenPort&#x3D;10050</span><br><span class="line"></span><br><span class="line">StartAgents&#x3D;5</span><br><span class="line"></span><br><span class="line">#ServerActive&#x3D;192.168.0.81 #注释掉主动模式的配置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Timeout&#x3D;30</span><br><span class="line"></span><br><span class="line">Include&#x3D;&#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.d&#x2F;*.conf</span><br></pre></td></tr></table></figure>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start zabbix-agent.service </span><br></pre></td></tr></table></figure>
+
+<h2 id="监控配置"><a href="#监控配置" class="headerlink" title="监控配置"></a>监控配置</h2><h3 id="配置主机"><a href="#配置主机" class="headerlink" title="配置主机"></a>配置主机</h3><p><img src="/images/WX20201010-112402.png" alt="配置主机"></p>
+<h2 id="Web网页监控"><a href="#Web网页监控" class="headerlink" title="Web网页监控"></a>Web网页监控</h2><p>主机-&gt;web场景-&gt;创建web场景  </p>
+<ol>
+<li>场景<br><img src="/images/WX20201010-134325.png" alt="web监测">  </li>
+<li>步骤<br><img src="/images/WX20201010-134718.png" alt="web监测"></li>
+</ol>
+<h2 id="监控nginx状态码"><a href="#监控nginx状态码" class="headerlink" title="监控nginx状态码"></a>监控nginx状态码</h2><h3 id="创建nginx-access日志解析脚本"><a href="#创建nginx-access日志解析脚本" class="headerlink" title="创建nginx access日志解析脚本"></a>创建nginx access日志解析脚本</h3><p>每5分钟处理一次当日access日志，记录状态码和次数写入access.code.log文件  </p>
+<ul>
+<li>对于docker内的nginx，使用-i而不是用-it  </li>
+<li>生成的access.code.log需要授权给zabbix否则会出现无权限异常  </li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/zabbix/zabbix_agentd.d</span><br><span class="line">vim access.log.sh </span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写日志采集脚本  </li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">rm -rf /etc/zabbix/zabbix_agentd.d/access.code.log 2&gt;&amp;1 &gt; /dev/null</span><br><span class="line">date=`date &quot;+%d/%b/%Y:%H:&quot; -d &quot;5 min ago&quot;`</span><br><span class="line">today=`date &quot;+%Y-%m-%d&quot;`</span><br><span class="line">logpath=/var/log/nginx/access-$today.log</span><br><span class="line">dockerName=nginx</span><br><span class="line">docker exec -i nginx grep &quot;$date&quot; $logpath|awk -F &#x27; &#x27; &#x27;&#123;print $9&#125;&#x27; |awk  &#x27;&#123;sum[$1]+=1&#125;END&#123;for(c in sum)&#123;print c&quot;|&quot;sum[c]&#125;&#125;&#x27; &gt; /etc/zabbix/zabbix_agentd.d/access.code.log</span><br><span class="line"></span><br><span class="line">chown -Rf zabbix.zabbix /etc/zabbix/zabbix_agentd.d/access.code.log</span><br><span class="line"></span><br><span class="line">echo 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写zabbix方法脚本<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim access.code.sh </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">以下来定义函数方便 UserParameter 调用</span></span><br><span class="line">function c_200 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;200|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_202 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;202|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_301 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;301|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_302 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;302|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_304 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;304|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_400 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;400|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_403 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;403|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_404 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;404|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_405 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;405|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_502 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;502|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_503 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;503|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_504 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;504|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加zabbix监控配置   </li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim userparameter_nginx_access.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UserParameter=access.log,/etc/zabbix/zabbix_agentd.d/access.log.sh</span><br><span class="line">UserParameter=access.code[*],/etc/zabbix/zabbix_agentd.d/access.code.sh $1</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置zabbix监控项"><a href="#配置zabbix监控项" class="headerlink" title="配置zabbix监控项"></a>配置zabbix监控项</h3><ol>
+<li>创建模板<br>配置-&gt;模板-&gt;创建模板  </li>
+<li>创建监控项<br>模板-&gt;监控项-&gt;创建监控项  </li>
+<li>创建日志收集监控<br><img src="/images/WX20201010-141442.png" alt="收集监控">  </li>
+<li>创建code码监控<br><img src="/images/WX20201010-141549.png" alt="code监控">  </li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/10/10/zabbix/" data-id="ckg3agzf00009q1os1kns22nz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream问题排查" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="article-date">
@@ -94,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" data-id="ckexuug1800007sosesj63wx8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" data-id="ckg3agzeh0000q1osefqgbmqd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -143,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckexuug1k00027sos0uawc1g7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckg3agzes0003q1osa7lbgocp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckexuug1l00037sos82b63ec8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckg3agzer0002q1os0wisa0s9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckexuug1s00087sos09f6dz6d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckg3agzez0008q1osg65v7ko2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckexuug1i00017soshvo191vp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckg3agzep0001q1os252e1s53" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +418,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckexuug1n00057sos6zku2xyc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckg3agzeu0005q1osdtcu66hk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -404,7 +487,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckexuug1m00047sos9k1j6swg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckg3agzet0004q1os34hcd1tx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -442,7 +525,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckexuug1p00067sosa3mghh70" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckg3agzex0006q1osggslbe9q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -486,7 +569,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckexuug1r00077soshtu8hd03" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckg3agzey0007q1os14etgs5m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +597,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -525,6 +608,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/10/10/zabbix/">zabbix</a>
+          </li>
         
           <li>
             <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
@@ -540,10 +627,6 @@
         
           <li>
             <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/">延时时间轮</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/docker/">docker</a>
           </li>
         
       </ul>
