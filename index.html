@@ -64,6 +64,49 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux内存机制以及手动释放swap和内存" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/" class="article-date">
+  <time datetime="2020-10-29T01:29:43.000Z" itemprop="datePublished">2020-10-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/">Linux内存机制以及手动释放swap和内存</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>近期收到zabbix不断报警，一台服务器出现swap不足。</p>
+<h1 id="Linux-swap机制"><a href="#Linux-swap机制" class="headerlink" title="Linux swap机制"></a>Linux swap机制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Linux divides its physical RAM (random access memory) into chucks of memory called pages. Swapping is the process whereby a page of memory is copied to the preconfigured space on the hard disk, called swap space, to free up that page of memory. The combined sizes of the physical memory and the swap space is the amount of virtual memory available.</span><br><span class="line"></span><br><span class="line">Swap space in Linux is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, inactive pages in memory are moved to the swap space. While swap space can help machines with a small amount of RAM, it should not be considered a replacement for more RAM. Swap space is located on hard drives, which have a slower access time than physical memory.Swap space can be a dedicated swap partition (recommended), a swap file, or a combination of swap partitions and swap files.</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">Linux内核为了提高读写效率与速度，会将文件在内存中进行缓存，这部分内存就是Cache Memory(缓存内存)。即使你的程序运行结束后，Cache Memory也不会自动释放。这就会导致你在Linux系统中程序频繁读写文件后，你会发现可用物理内存变少。当系统的物理内存不够用的时候，就需要将物理内存中的一部分空间释放出来，以供当前运行的程序使用。那些被释放的空间可能来自一些很长时间没有什么操作的程序，这些被释放的空间被临时保存到Swap空间中，等到那些程序要运行时，再从Swap分区中恢复保存的数据到内存中。这样，系统总是在物理内存不够时，才进行Swap交换。</span><br></pre></td></tr></table></figure>
+
+<p>简单来说就是为了提高内核读写效率，会对文件进行内存缓存，但是内存空间有限，就会将一部分数据放在硬盘上，当程序需要再次使用到这部分数据，会将其恢复到内存中。</p>
+<h1 id="swap使用定位"><a href="#swap使用定位" class="headerlink" title="swap使用定位"></a>swap使用定位</h1><p>通过命令<code>free -m</code>，查看当前服务器swap的使用情况<br><img src="/images/WX20201102-090705.png"><br>在进程目录下，/proc/${PID}/smaps文件中记录着swap的使用情况，通过命令<br><code>for i in $(ls /proc | grep &quot;^[0-9]&quot; | awk &#39;$0&gt;100&#39;); do awk &#39;/Swap:/&#123;a=a+$2&#125;END&#123;print &#39;&quot;$i&quot;&#39;,a/1024&quot;M&quot;&#125;&#39; /proc/$i/smaps;done| sort -k2nr | head</code><br>查看系统中swap各进程占用<br><img src="/images/WX20201102-091129.png"><br>在查看具体进程<code>ps -ef|grep $&#123;PID&#125;</code><br>(之前有一个4040的java程序占用最高600多M，由于着急恢复系统，所以没有截图，暂时拿另一个java的进行记录说明)<br><img src="/images/WX20201102-091443.png"><br>发现是一个java程序，由于我们的服务都是跑在docker中的，所以需要定位具体是哪个docker容器中的java造成的<br>通过docker命令<code>docker top &lt;容器id&gt;</code>可以查看容器内的各个进程<br><img src="/images/WX20201102-091732.png">  </p>
+<h1 id="手动释放swap"><a href="#手动释放swap" class="headerlink" title="手动释放swap"></a>手动释放swap</h1><p>通过命令<code>swapon -s</code>可以查看到swap的挂载情况<br><img src="/images/WX20201029-092628.png"><br>通过命令<code>swapoff 挂载目录</code>将其释放到内存中，此时要保证内存空间充足，否则会造成死机  </p>
+<h1 id="Java程序造成swap高的定位"><a href="#Java程序造成swap高的定位" class="headerlink" title="Java程序造成swap高的定位"></a>Java程序造成swap高的定位</h1><p>通过程序日志发现，容器内部出现了无法解析数据库域名的情况(此情况在我们多个java服务都出现，似乎是docker容器的问题，暂时没找到具体问题和解决方案，只能通过重启服务解决)<br><img src="/images/WX20201102-092554.png"> </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/" data-id="ckgzvoavp00006rosh6md2n95" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-zabbix" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/10/10/zabbix/" class="article-date">
@@ -89,13 +132,13 @@
         <h1 id="docker部署zabbix-server"><a href="#docker部署zabbix-server" class="headerlink" title="docker部署zabbix-server"></a>docker部署zabbix-server</h1><h2 id="部署MySQL数据库"><a href="#部署MySQL数据库" class="headerlink" title="部署MySQL数据库"></a>部署MySQL数据库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mysql-server -t \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -d mysql:5.7  \</span><br><span class="line">--character-set-server&#x3D;utf8 --collation-server&#x3D;utf8_bin</span><br></pre></td></tr></table></figure>
 <h2 id="部署zabbix-server"><a href="#部署zabbix-server" class="headerlink" title="部署zabbix-server"></a>部署zabbix-server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-server-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      -p 10051:10051 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-server-mysql:latest</span><br></pre></td></tr></table></figure>
 <h2 id="部署web-nginx-连接到zabbix和mysql"><a href="#部署web-nginx-连接到zabbix和mysql" class="headerlink" title="部署web nginx 连接到zabbix和mysql"></a>部署web nginx 连接到zabbix和mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-web-nginx-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      --link zabbix-server-mysql:zabbix-server \</span><br><span class="line">      -p 8080:80 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-web-nginx-mysql:latest</span><br></pre></td></tr></table></figure>
+<h2 id="修改Web中文乱码"><a href="#修改Web中文乱码" class="headerlink" title="修改Web中文乱码"></a>修改Web中文乱码</h2><p>下载<a target="_blank" rel="noopener" href="https://freefontsdownload.net/free-simkai-font-137629.htm">中文字体</a><br>覆盖至容器zabbix-web-nginx-mysql:/usr/share/zabbix/assets/fonts/DejaVuSans.ttf  </p>
+<h1 id="zabbix-agent安装"><a href="#zabbix-agent安装" class="headerlink" title="zabbix-agent安装"></a>zabbix-agent安装</h1><h2 id="添加zabbix-agent-Repository-Ubuntu-16-04"><a href="#添加zabbix-agent-Repository-Ubuntu-16-04" class="headerlink" title="添加zabbix-agent Repository(Ubuntu 16.04)"></a>添加zabbix-agent Repository(Ubuntu 16.04)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.0&#x2F;ubuntu&#x2F;pool&#x2F;main&#x2F;z&#x2F;zabbix-release&#x2F;zabbix-release_4.0-3+xenial_all.deb </span><br><span class="line">dpkg -i zabbix-release_4.0-3+xenial_all.deb</span><br></pre></td></tr></table></figure>
 
-<h1 id="zabbix-agent安装"><a href="#zabbix-agent安装" class="headerlink" title="zabbix-agent安装"></a>zabbix-agent安装</h1><h2 id="添加zabbix-agent-Repository-Ubuntu-16-04"><a href="#添加zabbix-agent-Repository-Ubuntu-16-04" class="headerlink" title="添加zabbix-agent Repository(Ubuntu 16.04)"></a>添加zabbix-agent Repository(Ubuntu 16.04)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.0&#x2F;ubuntu&#x2F;pool&#x2F;main&#x2F;z&#x2F;zabbix-release&#x2F;zabbix-release_4.0-3+xenial_all.deb </span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -i zabbix-release_4.0-3+xenial_all.deb</span><br></pre></td></tr></table></figure>
-<h2 id="安装zabbix-agent"><a href="#安装zabbix-agent" class="headerlink" title="安装zabbix-agent"></a>安装zabbix-agent</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install  </span><br></pre></td></tr></table></figure>
+<h2 id="安装zabbix-agent"><a href="#安装zabbix-agent" class="headerlink" title="安装zabbix-agent"></a>安装zabbix-agent</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install zabbix-agent</span><br></pre></td></tr></table></figure>
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">LogFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.log </span><br><span class="line"></span><br><span class="line">PidFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.pid</span><br><span class="line"></span><br><span class="line">Server&#x3D;****** #server端ip</span><br><span class="line"></span><br><span class="line">ListenPort&#x3D;10050</span><br><span class="line"></span><br><span class="line">StartAgents&#x3D;5</span><br><span class="line"></span><br><span class="line">#ServerActive&#x3D;192.168.0.81 #注释掉主动模式的配置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Timeout&#x3D;30</span><br><span class="line"></span><br><span class="line">Include&#x3D;&#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.d&#x2F;*.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">LogFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.log </span><br><span class="line"></span><br><span class="line">PidFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.pid</span><br><span class="line">#server端ip</span><br><span class="line">Server&#x3D;******</span><br><span class="line"></span><br><span class="line">ListenPort&#x3D;10050</span><br><span class="line"></span><br><span class="line">StartAgents&#x3D;5</span><br><span class="line"></span><br><span class="line">#ServerActive&#x3D;192.168.0.81 #注释掉主动模式的配置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Timeout&#x3D;30</span><br><span class="line"></span><br><span class="line">Include&#x3D;&#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.d&#x2F;*.conf</span><br></pre></td></tr></table></figure>
 <h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start zabbix-agent.service </span><br></pre></td></tr></table></figure>
 
 <h2 id="监控配置"><a href="#监控配置" class="headerlink" title="监控配置"></a>监控配置</h2><h3 id="配置主机"><a href="#配置主机" class="headerlink" title="配置主机"></a>配置主机</h3><p><img src="/images/WX20201010-112402.png" alt="配置主机"></p>
@@ -108,6 +151,7 @@
 <ul>
 <li>对于docker内的nginx，使用-i而不是用-it  </li>
 <li>生成的access.code.log需要授权给zabbix否则会出现无权限异常  </li>
+<li>添加zabbix到docker组，否则无权限执行docker命令</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/zabbix/zabbix_agentd.d</span><br><span class="line">vim access.log.sh </span><br></pre></td></tr></table></figure>
 <ul>
@@ -137,7 +181,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/10/10/zabbix/" data-id="ckg3agzf00009q1os1kns22nz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/10/10/zabbix/" data-id="ckgzvoawa00096ros6bpj3xp0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -177,7 +221,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" data-id="ckg3agzeh0000q1osefqgbmqd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" data-id="ckgzvoaw700066ros17ar1tjc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckg3agzes0003q1osa7lbgocp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" data-id="ckgzvoaw800076ros1ize8aps" class="article-share-link">Share</a>
       
       
     </footer>
@@ -281,7 +325,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckg3agzer0002q1os0wisa0s9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" data-id="ckgzvoaw000036ros05xjajtf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -326,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckg3agzez0008q1osg65v7ko2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" data-id="ckgzvoawb000a6ros1hlbf7zs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -365,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckg3agzep0001q1os252e1s53" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/docker/" data-id="ckgzvoavx00016rosh87scxo4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -418,7 +462,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckg3agzeu0005q1osdtcu66hk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-config/" data-id="ckgzvoaw400046ros2d85gz3m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -487,7 +531,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckg3agzet0004q1os34hcd1tx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckgzvoavz00026ros7zlwequn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -525,51 +569,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckg3agzex0006q1osggslbe9q" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="mysql-mysql-deadlock" class="article article-type-mysql" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/08/27/mysql-deadlock/" class="article-date">
-  <time datetime="2020-08-27T02:15:28.000Z" itemprop="datePublished">2020-08-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/27/mysql-deadlock/">deadlock</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>公司mysql库偶尔会出现deadlock问题<br>Error: Error: update <code>think_settlement_day</code> set <code>total_payment</code> = 7500, <code>update_time</code> = 1598383500 where <code>group_id</code> = ‘40168’ and <code>date_time</code> = ‘2020-08-25’ and <code>total_payment_type</code> = 0 - Deadlock found when trying to get lock; try restarting transaction</p>
-<h2 id="问题猜测"><a href="#问题猜测" class="headerlink" title="问题猜测"></a>问题猜测</h2><p>期初认为是由于多线程同时处理任务，出现并发更新的造成锁问题。<br>后确认业务逻辑未出现多线程处理，且报错来看是deadlock(死锁)，因此不是行锁更新问题。</p>
-<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><h2 id="查看mysql官方文档对deadlock的说明"><a href="#查看mysql官方文档对deadlock的说明" class="headerlink" title="查看mysql官方文档对deadlock的说明"></a>查看mysql官方文档对deadlock的说明</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html">Deadlocks in InnoDB</a><br><code>A deadlock is a situation where different transactions are unable to proceed because each holds a lock that the other needs. Because both transactions are waiting for a resource to become available, neither ever release the locks it holds.</code><br>相互持有锁造成的，当时没能和问题直接建立联系，继续翻找资料。<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks-handling.html">How to Minimize and Handle Deadlocks</a><br><code>If you use locking reads (SELECT ... FOR UPDATE or SELECT ... LOCK IN SHARE MODE), try using a lower isolation level such as READ COMMITTED.</code><br>读锁(后续再详细学习下innodb的锁)，简单来说就是在对于增删改操作，<code>先将数据读取出来，再对数据进行修改</code>  </p>
-<h2 id="查看死锁日志"><a href="#查看死锁日志" class="headerlink" title="查看死锁日志"></a>查看死锁日志</h2><p><code>show engine innodb status</code></p>
-<h2 id="分析sql语句"><a href="#分析sql语句" class="headerlink" title="分析sql语句"></a>分析sql语句</h2><p><code>EXPLAIN update </code>think_settlement_day<code>set</code>total_payment<code>= 7500,</code>update_time<code>= 1598383500 where</code>group_id<code>= &#39;40168&#39; and</code>date_time<code>= &#39;2020-08-25&#39; and</code>total_payment_type<code> = 0</code><br><img src="/images/WX20200827-110220.png"><br>从mysql5.1开始，引入了 index merge 优化技术，对同一个表可以使用多个索引分别进行条件扫描。<br><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.7/en/index-merge-optimization.html">index merge</a><br><code>The Index Merge access method retrieves rows with multiple range scans and merges their results into one. This access method merges index scans from a single table only, not scans across multiple tables. The merge can produce unions, intersections, or unions-of-intersections of its underlying scans.</code><br>简单来说就是对一张表上做多个索引扫表，形成交集索引</p>
-<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>读锁锁住了一些本次不会更新的记录，且恰恰是另外一条update要更新的语句，造成deadlock</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>使用组合索引<br>取消index merge 优化  </p>
-<h2 id="资料参考"><a href="#资料参考" class="headerlink" title="资料参考"></a>资料参考</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/CtripDBA/p/10207784.html">MySQL DeadLock故障排查过程</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/38b13b8b3920">记录一次mysql死锁(患者为index merge)</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/64435240">MySQL–index merge死锁案例详细分析</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckg3agzey0007q1os14etgs5m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckgzvoaw500056ros2ujtfctc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -580,6 +580,11 @@
 
   
 
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+  </nav>
 
 </section>
         
@@ -610,6 +615,10 @@
       <ul>
         
           <li>
+            <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/">Linux内存机制以及手动释放swap和内存</a>
+          </li>
+        
+          <li>
             <a href="/2020/10/10/zabbix/">zabbix</a>
           </li>
         
@@ -623,10 +632,6 @@
         
           <li>
             <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/">jenkins部署oss</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/">延时时间轮</a>
           </li>
         
       </ul>
