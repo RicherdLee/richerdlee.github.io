@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>剖析slf4j原理并实现自己的日志框架 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="场景需求为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="剖析slf4j原理并实现自己的日志框架">
+<meta property="og:url" content="http://yoursite.com/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="场景需求为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/WX20201124-161630.png">
+<meta property="og:image" content="http://yoursite.com/images/WX20201124-175549.png">
+<meta property="og:image" content="http://yoursite.com/images/WX20201125-195450.png">
+<meta property="article:published_time" content="2020-11-19T00:56:42.000Z">
+<meta property="article:modified_time" content="2020-11-25T11:58:27.575Z">
+<meta property="article:author" content="Li Hao">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/WX20201124-161630.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-剖析slf4j原理并实现自己的日志框架" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" class="article-date">
+  <time datetime="2020-11-19T00:56:42.000Z" itemprop="datePublished">2020-11-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      剖析slf4j原理并实现自己的日志框架
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h1><p>为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。</p>
+<h1 id="Java日志框架"><a href="#Java日志框架" class="headerlink" title="Java日志框架"></a>Java日志框架</h1><h2 id="日志门面"><a href="#日志门面" class="headerlink" title="日志门面"></a>日志门面</h2><p><font color= red >SLF4J</font> 是java中的日志门面，即提供一套通用的接口，具体的实现可有开发者自有选择</p>
+<h2 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h2><h2 id="SLF4J-Simple-Logging-Facade-for-JAVA"><a href="#SLF4J-Simple-Logging-Facade-for-JAVA" class="headerlink" title="SLF4J(Simple Logging Facade for JAVA)"></a>SLF4J(Simple Logging Facade for JAVA)</h2><h3 id="slf4j源码分析"><a href="#slf4j源码分析" class="headerlink" title="slf4j源码分析"></a>slf4j源码分析</h3><ul>
+<li>通过工厂获取去logger实例  </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TODO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> lihao</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2020/11/19 14:43</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggerTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LoggerTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;LoggerTest&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getLogger()</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        ILoggerFactory iLoggerFactory = getILoggerFactory();</span><br><span class="line">        <span class="keyword">return</span> iLoggerFactory.getLogger(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getILoggerFactory() , 判断实例是否存在，并通过单例模式生成</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ILoggerFactory <span class="title">getILoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LoggerFactory.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;</span><br><span class="line">                    performInitialization();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>performInitialization()-&gt;bind(),</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// skip check under android, see also</span></span><br><span class="line">            <span class="comment">// http://jira.qos.ch/browse/SLF4J-328</span></span><br><span class="line">            <span class="keyword">if</span> (!isAndroid()) &#123;</span><br><span class="line">                staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet();</span><br><span class="line">                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet);</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">* findPossibleStaticLoggerBinderPathSet()，通过classloader获取名为“org/slf4j/impl/StaticLoggerBinder.class”的类</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String STATIC_LOGGER_BINDER_PATH = <span class="string">&quot;org/slf4j/impl/StaticLoggerBinder.class&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> Set&lt;URL&gt; <span class="title">findPossibleStaticLoggerBinderPathSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// use Set instead of list in order to deal with bug #138</span></span><br><span class="line">        <span class="comment">// LinkedHashSet appropriate here because it preserves insertion order</span></span><br><span class="line">        <span class="comment">// during iteration</span></span><br><span class="line">        Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">new</span> LinkedHashSet&lt;URL&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ClassLoader loggerFactoryClassLoader = LoggerFactory.class.getClassLoader();</span><br><span class="line">            Enumeration&lt;URL&gt; paths;</span><br><span class="line">            <span class="keyword">if</span> (loggerFactoryClassLoader == <span class="keyword">null</span>) &#123;</span><br><span class="line">                paths = ClassLoader.getSystemResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (paths.hasMoreElements()) &#123;</span><br><span class="line">                URL path = paths.nextElement();</span><br><span class="line">                staticLoggerBinderPathSet.add(path);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">            Util.report(<span class="string">&quot;Error getting resources from path&quot;</span>, ioe);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> staticLoggerBinderPathSet;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>找到项目中使用的日志jar,slf4j-log4j12的org/slf4j/impl/StaticLoggerBinder.class</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line">	....</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="自有日志框架"><a href="#自有日志框架" class="headerlink" title="自有日志框架"></a>自有日志框架</h1><h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="/images/WX20201124-161630.png">  </p>
+<ul>
+<li>测试类   </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestLogger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(TestLogger.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;TestLogger&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现1，简单实现info的打印"><a href="#实现1，简单实现info的打印" class="headerlink" title="实现1，简单实现info的打印"></a>实现1，简单实现info的打印</h2><ul>
+<li>StaticLoggerBinder，单例构建YHSimpleLogFactory</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ILoggerFactory loggerFactory;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String loggerFactoryClassStr = LoggerFactoryBinder.class.getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticLoggerBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerFactory = <span class="keyword">new</span> YHSimpleLogFactory();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILoggerFactory <span class="title">getLoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getLoggerFactoryClassStr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactoryClassStr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder SINGLETON = <span class="keyword">new</span> StaticLoggerBinder();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the StaticLoggerBinder singleton</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SINGLETON;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleLogFactory，使用ConcurrentMap，为每一个类只构建一个logger实例</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleLogger</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogger</span> <span class="keyword">implements</span> <span class="title">Logger</span></span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">&quot;%s,%s&quot;</span>, <span class="keyword">this</span>.name, msg));</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/*省略待实现方法*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最终输出</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger.TestLogger,TestLogger</span><br></pre></td></tr></table></figure>
+
+<h1 id="实现2，数据写入kafka"><a href="#实现2，数据写入kafka" class="headerlink" title="实现2，数据写入kafka"></a>实现2，数据写入kafka</h1><p>将实现1中的日志直接打印，改为写入kafka队列，可为每个类建立一个kafka producer</p>
+<ul>
+<li>YHSimpleKafkaLogFactory，此处要排除kafka中的log。因为是实验项目，所以使用了比较low的方法，直接对于kafka的日志，使用简单打印</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleKafkaLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleKafkaLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="comment">//对kafka自身的log，使用YHSimpleLogger</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (name.startsWith(<span class="string">&quot;org.apache.kafka&quot;</span>)) &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleKafkaLogger(name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleKafkaLogger，构建时实例化kafka producer</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class YHSimpleKafkaLogger implements Logger &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private static final String TOPIC &#x3D; &quot;test&quot;;</span><br><span class="line">    private static final String BROKER_LIST &#x3D; &quot;192.168.3.123:9092&quot;;</span><br><span class="line">    private static KafkaProducer&lt;String, String&gt; producer &#x3D; null;</span><br><span class="line"></span><br><span class="line">    public YHSimpleKafkaLogger(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        Properties properties &#x3D; new Properties();</span><br><span class="line">        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);</span><br><span class="line">        properties.put(ProducerConfig.ACKS_CONFIG, &quot;all&quot;);</span><br><span class="line">        properties.put(ProducerConfig.RETRIES_CONFIG, 0);</span><br><span class="line">        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);</span><br><span class="line">        properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);</span><br><span class="line">        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);</span><br><span class="line"></span><br><span class="line">        producer &#x3D; new KafkaProducer&lt;String, String&gt;(properties);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void info(String msg) &#123;</span><br><span class="line"></span><br><span class="line">        String str &#x3D; String.format(&quot;%s,%s&quot;, this.name, msg);</span><br><span class="line">        System.out.println(str);</span><br><span class="line">        producer.send(new ProducerRecord&lt;String, String&gt;(TOPIC, null, str));</span><br><span class="line">        producer.flush();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;*省略待实现方法*&#x2F;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>监听kafka队列，输出<br><img src="/images/WX20201124-175549.png"></li>
+</ul>
+<h2 id="实现3，基于kakfa的log4jappender将日志写入kafa队列"><a href="#实现3，基于kakfa的log4jappender将日志写入kafa队列" class="headerlink" title="实现3，基于kakfa的log4jappender将日志写入kafa队列"></a>实现3，基于kakfa的log4jappender将日志写入kafa队列</h2><p>引入maven依赖  </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;kafka-log4j-appender&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.4.0&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>编写日志配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=warn,stdout,KAFKA</span><br><span class="line"></span><br><span class="line"># stdout配置</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH\:mm\:ss&#125; [%p]-[%c] %m%n</span><br><span class="line">#日志输出</span><br><span class="line">log4j.appender.logfile=org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File=logs/test.log</span><br><span class="line">log4j.appender.logfile.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n</span><br><span class="line"></span><br><span class="line"># kafka配置</span><br><span class="line">#定义一个名为kafka 为Appender</span><br><span class="line">log4j.appender.KAFKA=org.apache.kafka.log4jappender.KafkaLog4jAppender</span><br><span class="line">#指定日志写入到Kafka的主题</span><br><span class="line">log4j.appender.KAFKA.topic=test</span><br><span class="line">#制定连接kafka的地址</span><br><span class="line">log4j.appender.KAFKA.brokerList=<span class="number">192.168</span>.<span class="number">3.123</span>:<span class="number">9092</span></span><br><span class="line">#压缩方式，默认为none</span><br><span class="line">log4j.appender.KAFKA.compressionType=none</span><br><span class="line">#指定Producer发送消息的方式，默认是false，即异步发送</span><br><span class="line">log4j.appender.KAFKA.syncSend=<span class="keyword">true</span></span><br><span class="line">#指定日志级别</span><br><span class="line">log4j.appender.KAFKA.Threshold=info</span><br><span class="line">log4j.appender.KAFKA.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.KAFKA.ignoreExceptions=<span class="keyword">false</span></span><br><span class="line">##kafka与服务端阻塞时长，超时则通过Failover Appender输出</span><br><span class="line">log4j.appender.KAFKA.maxBlockMs=<span class="number">1000</span></span><br><span class="line">log4j.appender.KAFKA.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L %% - %m%n</span><br><span class="line"></span><br><span class="line">#Failover</span><br><span class="line">log4j.appender.Failover=Failover</span><br><span class="line">log4j.appender.primary=KAFKA</span><br><span class="line">log4j.appender.appenders=logfile</span><br></pre></td></tr></table></figure>
+
+<font color= red >
+    注意  
+    1 log4j.rootLogger为warn，不可为info否则会出现deadlock，后续解释  
+    2 开启异步发送    log4j.appender.KAFKA.syncSend=true
+    3 开启Failover，当kafkaappender异常时将异常写入本地文件
+    4 减少与kafka服务端交互时间过长导致阻塞主业务，log4j.appender.KAFKA.maxBlockMs=1000
+</font> 
+
+<h3 id="kafkalog4jappender死锁"><a href="#kafkalog4jappender死锁" class="headerlink" title="kafkalog4jappender死锁"></a>kafkalog4jappender死锁</h3><p>启动日志测试程序后，出现程序卡死情况，通过<code>jstack 45978</code>追踪进程发现出现deadlock<br><img src="/images/WX20201125-195450.png">  </p>
+<p>可以看出<br>kafka线程想要获取0x0000000797610830锁，同时持有0x00000007976105d8<br>main主线程想要获取0x00000007976105d8锁，同时持有0x00000007976105d8，0x0000000797610748，0x0000000797610830<br>出现死锁，&lt;0x0000000797610830&gt; (a org.apache.log4j.spi.RootLogger)  &lt;0x00000007976105d8&gt; (a org.apache.kafka.clients.producer.internals.ProducerMetadata)<br>有人已经提问过<a target="_blank" rel="noopener" href="https://github.com/apache/kafka/pull/4375">KafkaLog4jAppender deadlocks when logging from producer network thread</a><br><code>at org.apache.kafka.clients.Metadata.update(Metadata.java:261)</code> 显示由261行开始再次申请org.apache.log4j.spi.RootLogger导致死锁</p>
+<p>将org.apache.kafka.clients.Metadata的日志权限提高至WARN,致使其不会打印INFO<br><code>log4j.logger.org.apache.kafka.clients.Metadata=WARN</code></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" data-id="ckidx54qh000b8jos0jxw8hzz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          追踪服务器自动重启问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux内存机制以及手动释放swap和内存</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/">追踪服务器自动重启问题</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/">剖析slf4j原理并实现自己的日志框架</a>
+          </li>
+        
+          <li>
+            <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/">Linux内存机制以及手动释放swap和内存</a>
+          </li>
+        
+          <li>
+            <a href="/2020/10/10/zabbix/">zabbix</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Li Hao<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
