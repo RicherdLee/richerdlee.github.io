@@ -1,319 +1,1188 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
+
+
+<html lang="en">
   
 
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/page/2/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="Li Hao">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title> Hexo</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
 
-<meta name="generator" content="Hexo 5.1.1"></head>
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <!-- mermaid -->
+      
+    </head>
+  </html>
+</html>
+
 
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+  <div id="app">
+    
       
+    <main class="content on">
+      
+<section class="cover">
+    
+      
+      <a class="forkMe" href="https://github.com/Shen-Yu/hexo-theme-ayer"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/cover1.jpg" alt="image frame" />
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+    <div class="cover-inner text-center text-white">
+      <h1><a href="/">Hexo</a></h1>
+      <div id="subtitle-box">
         
-          <a class="main-nav-link" href="/">Home</a>
+        <span id="subtitle"></span>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+      </div>
+      <div>
         
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
       </div>
     </div>
   </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-linux-command-line" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/08/28/linux-command-line/" class="article-date">
-  <time datetime="2020-08-28T00:06:07.000Z" itemprop="datePublished">2020-08-28</time>
-</a>
-    
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/28/linux-command-line/">linux-command-line</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="AWK"><a href="#AWK" class="headerlink" title="AWK"></a>AWK</h2><h3 id="奇偶行分离"><a href="#奇偶行分离" class="headerlink" title="奇偶行分离"></a>奇偶行分离</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat 途锐.csv |awk -F&#39;,&#39; &#39;&#123;if(NR%2&#x3D;&#x3D;1) &#123;print $1&quot;,&quot;$2&#125;&#125;&#39;&gt; 途锐_JH_&#96;date +%Y%m%d&#96;.csv   </span><br><span class="line">cat 途锐.csv |awk -F&#39;,&#39; &#39;&#123;if(NR%2&#x3D;&#x3D;0) &#123;print $1&#125;&#125;&#39;&gt; 途锐_WL_&#96;date +%Y%m%d&#96;.csv  </span><br></pre></td></tr></table></figure>
-<h3 id="按字段分离文件名"><a href="#按字段分离文件名" class="headerlink" title="按字段分离文件名"></a>按字段分离文件名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;|&#39; &#39;&#123;if(NR&#x3D;&#x3D;1)&#123;name&#x3D;$1&#125;if(name !&#x3D; $1)&#123;name&#x3D;$1&#125; print $2&quot;,&quot;$3 &gt;name&quot;.csv&quot; &#125;&#39; temp.res.csv</span><br></pre></td></tr></table></figure>
-<h3 id="awk-求和，第一列相同时累加第二列的值"><a href="#awk-求和，第一列相同时累加第二列的值" class="headerlink" title="awk 求和，第一列相同时累加第二列的值"></a>awk 求和，第一列相同时累加第二列的值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&quot;,&quot; &#39;&#123;sum[$1]+&#x3D;$2&#125;END&#123;for(c in sum)&#123;print c&quot;|&quot;sum[c]&#125;&#125;&#39;</span><br></pre></td></tr></table></figure>
-<h3 id="文件差集"><a href="#文件差集" class="headerlink" title="文件差集"></a>文件差集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;NR&#x3D;&#x3D;FNR&#123; a[$1]&#x3D;$1 &#125; NR&gt;FNR&#123; if(a[$1] &#x3D;&#x3D; &quot;&quot;)&#123; print $1&#125;&#125;&#39; Tiguan_20180528_20180604 Tiguan_20180521_20180527.csv</span><br></pre></td></tr></table></figure>
-<h3 id="文件交集"><a href="#文件交集" class="headerlink" title="文件交集"></a>文件交集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;\t&#39; &#39;NR&#x3D;&#x3D;FNR&#123; arr[$1]&#x3D;&quot;x&quot; &#125; NR&gt;FNR&#123; if(arr[$1]!&#x3D;&quot;&quot;)&#123; print $1&quot;,&quot;$2 &#125; &#125;&#39; a.txt b.txt</span><br></pre></td></tr></table></figure>
-<h3 id="去重行"><a href="#去重行" class="headerlink" title="去重行"></a>去重行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;!a[$0]++&#39; file</span><br></pre></td></tr></table></figure>
-<h3 id="去重，字段转小写"><a href="#去重，字段转小写" class="headerlink" title="去重，字段转小写"></a>去重，字段转小写</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat 20180628_ajia.csv | awk &#39;!a[$0]++&#39; | awk &#39;&#123;print $1&quot;,&quot;tolower($2)&#125;&#39; &gt; 20180628_ajia_uniq.csv    </span><br></pre></td></tr></table></figure>
-
-<h3 id="打印倒数"><a href="#打印倒数" class="headerlink" title="打印倒数"></a>打印倒数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat final_result20180630.csv |head -n 100|awk -F&quot;,&quot; &#39;&#123;print $1&quot;,&quot;$2&quot;,&quot;$3&quot;,&quot;$(NF-3)&quot;,&quot;$(NF-2)&quot;,&quot;$(NF-1)&#125;&#39;&gt; 20180630.csv</span><br></pre></td></tr></table></figure>
-
-<h3 id="按列统计行数"><a href="#按列统计行数" class="headerlink" title="按列统计行数"></a>按列统计行数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a*_out_20181010.csv|awk -F&#39;,&#39; &#39;&#123;print $3&#125;&#39;|sort|uniq -c|awk &#39;&#123;print $2&quot; &quot;$3&#125;&#39;|less</span><br></pre></td></tr></table></figure>
-
-<h3 id="取最后一列"><a href="#取最后一列" class="headerlink" title="取最后一列"></a>取最后一列</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;&#123;print $NF&#125;&#39; </span><br></pre></td></tr></table></figure>
-<h3 id="两个文件相同列"><a href="#两个文件相同列" class="headerlink" title="两个文件相同列"></a>两个文件相同列</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#39;NR&#x3D;&#x3D;FNR&#123;a[$1]++&#125;NR!&#x3D;FNR&#123;if($1 in a)&#123;print&#125;&#125;&#39; 1114.csv 1128.csv</span><br></pre></td></tr></table></figure>
-
-<h2 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h2><h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &#39;s&#x2F;原字符串&#x2F;替换字符串&#x2F;&#39;</span><br></pre></td></tr></table></figure>
-<h3 id="判断字符串长度"><a href="#判断字符串长度" class="headerlink" title="判断字符串长度"></a>判断字符串长度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;#str&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="字符串截取"><a href="#字符串截取" class="headerlink" title="字符串截取"></a>字符串截取</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;beginDate:2&#125; &#x2F;&#x2F;去掉前两位</span><br></pre></td></tr></table></figure>
-<h3 id="替换指定位置字符"><a href="#替换指定位置字符" class="headerlink" title="替换指定位置字符"></a>替换指定位置字符</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#39;BEGIN&#123;FS&#x3D;OFS&#x3D;&quot;,&quot;&#125;&#123;sub(&#x2F;,&#x2F;,&quot;;&quot;,$32)&#125;1&#39; file</span><br></pre></td></tr></table></figure>
-
-<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><h3 id="目录不存在则创建目录"><a href="#目录不存在则创建目录" class="headerlink" title="目录不存在则创建目录"></a>目录不存在则创建目录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh user@192.168.3.131 &quot;[ -d &#x2F;var&#x2F;test ] &amp;&amp; echo ok || mkdir -p &#x2F;var&#x2F;test&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="文件目录操作"><a href="#文件目录操作" class="headerlink" title="文件目录操作"></a>文件目录操作</h2><h3 id="切分文件"><a href="#切分文件" class="headerlink" title="切分文件"></a>切分文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">split  -b 20m -d -a 3   齐家_500W.csv 齐家  </span><br></pre></td></tr></table></figure>
-<h3 id="看各文件夹大小"><a href="#看各文件夹大小" class="headerlink" title="看各文件夹大小"></a>看各文件夹大小</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">du -h --max-depth&#x3D;1</span><br></pre></td></tr></table></figure>
-<h3 id="获取文件夹下的文件名"><a href="#获取文件夹下的文件名" class="headerlink" title="获取文件夹下的文件名"></a>获取文件夹下的文件名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">path&#x3D;$1</span><br><span class="line">files&#x3D;$(ls $path)</span><br><span class="line">for filename in $files</span><br><span class="line">do</span><br><span class="line">   echo $filename &gt;&gt; filename.txt</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h2 id="磁盘操作"><a href="#磁盘操作" class="headerlink" title="磁盘操作"></a>磁盘操作</h2><h3 id="查看磁盘UUID"><a href="#查看磁盘UUID" class="headerlink" title="查看磁盘UUID"></a>查看磁盘UUID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -l &#x2F;dev&#x2F;disk&#x2F;by-uuid&#x2F;</span><br></pre></td></tr></table></figure>
-
-<h2 id="压缩命令"><a href="#压缩命令" class="headerlink" title="压缩命令"></a>压缩命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">.gz</span><br><span class="line">　　解压1：gunzip FileName.gz</span><br><span class="line">　　解压2：gzip -d FileName.gz</span><br><span class="line">　　压缩：gzip FileName</span><br><span class="line">.tar.gz 和 .tgz</span><br><span class="line">　　解压：tar zxvf FileName.tar.gz</span><br><span class="line">　　压缩：tar zcvf FileName.tar.gz DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.bz2</span><br><span class="line">　　解压1：bzip2 -d FileName.bz2</span><br><span class="line">　　解压2：bunzip2 FileName.bz2</span><br><span class="line">　　压缩： bzip2 -z FileName</span><br><span class="line">.tar.bz2</span><br><span class="line">　　解压：tar jxvf FileName.tar.bz2 或tar –bzip xvf FileName.tar.bz2</span><br><span class="line">　　压缩：tar jcvf FileName.tar.bz2 DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.bz</span><br><span class="line">　　解压1：bzip2 -d FileName.bz</span><br><span class="line">　　解压2：bunzip2 FileName.bz</span><br><span class="line">　　压缩：未知</span><br><span class="line">.tar.bz</span><br><span class="line">　　解压：tar jxvf FileName.tar.bz</span><br><span class="line">　　压缩：未知</span><br><span class="line">　　———————————————</span><br><span class="line">.Z</span><br><span class="line">　　解压：uncompress FileName.Z</span><br><span class="line">　　压缩：compress FileName</span><br><span class="line">.tar.Z</span><br><span class="line">　　解压：tar Zxvf FileName.tar.Z</span><br><span class="line">　　压缩：tar Zcvf FileName.tar.Z DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.zip</span><br><span class="line">　　解压：unzip FileName.zip</span><br><span class="line">　　压缩：zip FileName.zip DirName</span><br><span class="line">　　压缩一个目录使用 -r 参数，-r 递归。例： $ zip -r FileName.zip DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.rar</span><br><span class="line">　　解压：rar x FileName.rar</span><br><span class="line">　　压缩：rar a FileName.rar DirName</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><h3 id="ps-amp-top"><a href="#ps-amp-top" class="headerlink" title="ps&amp;top"></a>ps&amp;top</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y procps</span><br></pre></td></tr></table></figure>
-<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install net-tools</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/28/linux-command-line/" data-id="ckidx54q600038jos5be545ls" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-command-line" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/08/27/mysql-command-line/" class="article-date">
-  <time datetime="2020-08-27T02:55:38.000Z" itemprop="datePublished">2020-08-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/27/mysql-command-line/">mysql-command-line</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h2><p>查看慢查询是否开启<br><code>show variables like &#39;%slow_query_log%&#39;;</code><br>开启慢查询<br><code>set global slow_query_log = 1;</code><br>显示慢查询阈值(单位秒)<br><code>show variables like &#39;%long_query%&#39;;</code><br>设置慢查询阈值<br>注意:设置后需要重新打开mysql客户端才能到最新的值<br><code>set global long_query_time = 0.8;</code>  </p>
-<h2 id="死锁日志"><a href="#死锁日志" class="headerlink" title="死锁日志"></a>死锁日志</h2><p>查看死锁的日志是否开启<br><code>show variables like &quot;%innodb_print_all_deadlocks%&quot;;</code><br>开启记录死锁<br><code>set global innodb_print_all_deadlocks=1</code><br>查看死锁日志<br><code>show engine innodb status</code>  </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-command-line/" data-id="ckidx54q900058josg80s5ops" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="mysql-mysql-deadlock" class="article article-type-mysql" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/08/27/mysql-deadlock/" class="article-date">
-  <time datetime="2020-08-27T02:15:28.000Z" itemprop="datePublished">2020-08-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/27/mysql-deadlock/">deadlock</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>公司mysql库偶尔会出现deadlock问题<br>Error: Error: update <code>think_settlement_day</code> set <code>total_payment</code> = 7500, <code>update_time</code> = 1598383500 where <code>group_id</code> = ‘40168’ and <code>date_time</code> = ‘2020-08-25’ and <code>total_payment_type</code> = 0 - Deadlock found when trying to get lock; try restarting transaction</p>
-<h2 id="问题猜测"><a href="#问题猜测" class="headerlink" title="问题猜测"></a>问题猜测</h2><p>期初认为是由于多线程同时处理任务，出现并发更新的造成锁问题。<br>后确认业务逻辑未出现多线程处理，且报错来看是deadlock(死锁)，因此不是行锁更新问题。</p>
-<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><h2 id="查看mysql官方文档对deadlock的说明"><a href="#查看mysql官方文档对deadlock的说明" class="headerlink" title="查看mysql官方文档对deadlock的说明"></a>查看mysql官方文档对deadlock的说明</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html">Deadlocks in InnoDB</a><br><code>A deadlock is a situation where different transactions are unable to proceed because each holds a lock that the other needs. Because both transactions are waiting for a resource to become available, neither ever release the locks it holds.</code><br>相互持有锁造成的，当时没能和问题直接建立联系，继续翻找资料。<br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks-handling.html">How to Minimize and Handle Deadlocks</a><br><code>If you use locking reads (SELECT ... FOR UPDATE or SELECT ... LOCK IN SHARE MODE), try using a lower isolation level such as READ COMMITTED.</code><br>读锁(后续再详细学习下innodb的锁)，简单来说就是在对于增删改操作，<code>先将数据读取出来，再对数据进行修改</code>  </p>
-<h2 id="查看死锁日志"><a href="#查看死锁日志" class="headerlink" title="查看死锁日志"></a>查看死锁日志</h2><p><code>show engine innodb status</code></p>
-<h2 id="分析sql语句"><a href="#分析sql语句" class="headerlink" title="分析sql语句"></a>分析sql语句</h2><p><code>EXPLAIN update </code>think_settlement_day<code>set</code>total_payment<code>= 7500,</code>update_time<code>= 1598383500 where</code>group_id<code>= &#39;40168&#39; and</code>date_time<code>= &#39;2020-08-25&#39; and</code>total_payment_type<code> = 0</code><br><img src="/images/WX20200827-110220.png"><br>从mysql5.1开始，引入了 index merge 优化技术，对同一个表可以使用多个索引分别进行条件扫描。<br><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.7/en/index-merge-optimization.html">index merge</a><br><code>The Index Merge access method retrieves rows with multiple range scans and merges their results into one. This access method merges index scans from a single table only, not scans across multiple tables. The merge can produce unions, intersections, or unions-of-intersections of its underlying scans.</code><br>简单来说就是对一张表上做多个索引扫表，形成交集索引</p>
-<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>读锁锁住了一些本次不会更新的记录，且恰恰是另外一条update要更新的语句，造成deadlock</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>使用组合索引<br>取消index merge 优化  </p>
-<h2 id="资料参考"><a href="#资料参考" class="headerlink" title="资料参考"></a>资料参考</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/CtripDBA/p/10207784.html">MySQL DeadLock故障排查过程</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/38b13b8b3920">记录一次mysql死锁(患者为index merge)</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/64435240">MySQL–index merge死锁案例详细分析</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/08/27/mysql-deadlock/" data-id="ckidx54qb00068josc00321y2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
-  </nav>
-
 </section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
 
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
+
+
+<!-- Subtitle -->
+
+  <script>
+    try {
+      var typed = new Typed("#subtitle", {
+        strings: ['面朝大海，春暖花开', '愿你一生努力，一生被爱', '想要的都拥有，得不到的都释怀'],
+        startDelay: 0,
+        typeSpeed: 200,
+        loop: true,
+        backSpeed: 100,
+        showCursor: true
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  </script>
   
-    
+<div id="main">
+  <section class="outer">
   
+  <ul class="ads">
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li></ul>
+        <li>
+            <a target="_blank" rel="noopener" href="https://www.vultr.com/?ref=8630075">
+                <img src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/vultr.png" width="300" alt="vultr优惠vps">
+            </a>
+        </li>
+    
+        <li>
+            <a target="_blank" rel="noopener" href="https://curl.qcloud.com/kvO7hb43">
+                <img src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/ten_2.jpg" width="300" alt="云服务器全球购低至2折">
+            </a>
+        </li>
+    
+</ul>
+  
+  
+  
+
+<div class="notice" style="margin-top:50px">
+    <i class="ri-heart-fill"></i>
+    <div class="notice-content" id="broad"></div>
+</div>
+<script type="text/javascript">
+    fetch('https://v1.hitokoto.cn')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("broad").innerHTML = data.hitokoto;
+        })
+        .catch(console.error)
+</script>
+
+<style>
+    .notice {
+        padding: 20px;
+        border: 1px dashed #e6e6e6;
+        color: #969696;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        background: #fbfbfb50;
+        border-radius: 10px;
+    }
+
+    .notice i {
+        float: left;
+        color: #999;
+        font-size: 16px;
+        padding-right: 10px;
+        vertical-align: middle;
+        margin-top: -2px;
+    }
+
+    .notice-content {
+        display: initial;
+        vertical-align: middle;
+    }
+</style>
+  
+  <article class="articles">
+    
+    
+    
+    
+    <article
+  id="post-追踪django项目下接口阻塞问题"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/12/17/%E8%BF%BD%E8%B8%AAdjango%E9%A1%B9%E7%9B%AE%E4%B8%8B%E6%8E%A5%E5%8F%A3%E9%98%BB%E5%A1%9E%E9%97%AE%E9%A2%98/"
+    >追踪django项目下接口阻塞问题</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/12/17/%E8%BF%BD%E8%B8%AAdjango%E9%A1%B9%E7%9B%AE%E4%B8%8B%E6%8E%A5%E5%8F%A3%E9%98%BB%E5%A1%9E%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2020-12-17T05:47:09.000Z" itemprop="datePublished">2020-12-17</time>
+</a>    
     </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>公司一个django项目出现固定接口阻塞问题</p>
+<h1 id="问题追踪"><a href="#问题追踪" class="headerlink" title="问题追踪"></a>问题追踪</h1><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>当线上出现接口阻塞卡住时，通过测试服务连接线上库，测试服务接口未出现阻塞，基本排除数据库问题。</p>
+<h2 id="django"><a href="#django" class="headerlink" title="django"></a>django</h2><p>通过nginx负载均衡，提高后端服务数量，并未出现明显效果提升</p>
+<h1 id="分析python性能"><a href="#分析python性能" class="headerlink" title="分析python性能"></a>分析python性能</h1><h2 id="py-spy"><a href="#py-spy" class="headerlink" title="py-spy"></a>py-spy</h2><p>基于之前通过jstack对java线程分析，使用py-spy分析线上代码，查找出现性能问题的地方.</p>
+<h2 id="火焰图"><a href="#火焰图" class="headerlink" title="火焰图"></a>火焰图</h2><p>通过命令py-spy record -o profile.svg -p ${pid}生成的火焰图查看(也可以通过py-spy top -p ${pid})<br>只能用最高的是logging日志和django的reload</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
   </div>
 
-
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/">追踪服务器自动重启问题</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/">剖析slf4j原理并实现自己的日志框架</a>
-          </li>
-        
-          <li>
-            <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/">Linux内存机制以及手动释放swap和内存</a>
-          </li>
-        
-          <li>
-            <a href="/2020/10/10/zabbix/">zabbix</a>
-          </li>
-        
-          <li>
-            <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a>
-          </li>
-        
-      </ul>
+ 
+    
+</article>
+
+    
+    <article
+  id="post-追踪服务器自动重启问题"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/"
+    >追踪服务器自动重启问题</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2020-12-07T01:23:22.000Z" itemprop="datePublished">2020-12-07</time>
+</a>    
     </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>#现象<br>近期gitlab频繁出现无法登录，代码无法提交的现象。登录服务器后发现整个docker服务出现了重启，期初认为是某个容器异常导致docker服务重启。<br>#追踪docker服务<br>通过命令<code>journalctl -fu docker.service</code>查看docker的服务发现，docker服务并没有因为异常而重启，而是<code>正常重启</code><br><img src="/images/WX20201207-093317.png"><br>#追踪系统日志<br>无法确认docker容器是因为异常重启，则将目标转到linux的系统日志，竟然发现系统日志sys.log中出现了reboot的日志。<br><code>localhost cron[1165]: (CRON) INFO (Running @reboot jobs)，</code><br>赶紧将<code>crontab -l</code>打开查看，并未发现有重启服务的调度。最终在<code>/etc/cron.d</code>下发现<code>mdadm</code>的一条定时任务<code>57 0 * * 0 root if [ -x /usr/share/mdadm/checkarray ] &amp;&amp; [ $(date +\%d) -le 7 ]; then /usr/share/mdadm/checkarray --cron --all --idle --quiet; fi</code>，难道是硬盘raid出现了问题了？<br>#备份docker容器<br>为了避免由于硬盘的问题导致git的丢失，赶紧通过docker相关命令将容器备份起来<br><img src="/images/WX20201207-095148.png">  </p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
   </div>
 
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-剖析slf4j原理并实现自己的日志框架"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/"
+    >剖析slf4j原理并实现自己的日志框架</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" class="article-date">
+  <time datetime="2020-11-19T00:56:42.000Z" itemprop="datePublished">2020-11-19</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h1><p>为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。</p>
+<h1 id="Java日志框架"><a href="#Java日志框架" class="headerlink" title="Java日志框架"></a>Java日志框架</h1><h2 id="日志门面"><a href="#日志门面" class="headerlink" title="日志门面"></a>日志门面</h2><p><font color= red >SLF4J</font> 是java中的日志门面，即提供一套通用的接口，具体的实现可有开发者自有选择</p>
+<h2 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h2><h2 id="SLF4J-Simple-Logging-Facade-for-JAVA"><a href="#SLF4J-Simple-Logging-Facade-for-JAVA" class="headerlink" title="SLF4J(Simple Logging Facade for JAVA)"></a>SLF4J(Simple Logging Facade for JAVA)</h2><h3 id="slf4j源码分析"><a href="#slf4j源码分析" class="headerlink" title="slf4j源码分析"></a>slf4j源码分析</h3><ul>
+<li>通过工厂获取去logger实例  </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TODO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> lihao</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2020/11/19 14:43</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggerTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LoggerTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;LoggerTest&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getLogger()</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        ILoggerFactory iLoggerFactory = getILoggerFactory();</span><br><span class="line">        <span class="keyword">return</span> iLoggerFactory.getLogger(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getILoggerFactory() , 判断实例是否存在，并通过单例模式生成</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ILoggerFactory <span class="title">getILoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LoggerFactory.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;</span><br><span class="line">                    performInitialization();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>performInitialization()-&gt;bind(),</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// skip check under android, see also</span></span><br><span class="line">            <span class="comment">// http://jira.qos.ch/browse/SLF4J-328</span></span><br><span class="line">            <span class="keyword">if</span> (!isAndroid()) &#123;</span><br><span class="line">                staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet();</span><br><span class="line">                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet);</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">* findPossibleStaticLoggerBinderPathSet()，通过classloader获取名为“org/slf4j/impl/StaticLoggerBinder.class”的类</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String STATIC_LOGGER_BINDER_PATH = <span class="string">&quot;org/slf4j/impl/StaticLoggerBinder.class&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> Set&lt;URL&gt; <span class="title">findPossibleStaticLoggerBinderPathSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// use Set instead of list in order to deal with bug #138</span></span><br><span class="line">        <span class="comment">// LinkedHashSet appropriate here because it preserves insertion order</span></span><br><span class="line">        <span class="comment">// during iteration</span></span><br><span class="line">        Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">new</span> LinkedHashSet&lt;URL&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ClassLoader loggerFactoryClassLoader = LoggerFactory.class.getClassLoader();</span><br><span class="line">            Enumeration&lt;URL&gt; paths;</span><br><span class="line">            <span class="keyword">if</span> (loggerFactoryClassLoader == <span class="keyword">null</span>) &#123;</span><br><span class="line">                paths = ClassLoader.getSystemResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (paths.hasMoreElements()) &#123;</span><br><span class="line">                URL path = paths.nextElement();</span><br><span class="line">                staticLoggerBinderPathSet.add(path);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">            Util.report(<span class="string">&quot;Error getting resources from path&quot;</span>, ioe);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> staticLoggerBinderPathSet;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>找到项目中使用的日志jar,slf4j-log4j12的org/slf4j/impl/StaticLoggerBinder.class</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line">	....</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="自有日志框架"><a href="#自有日志框架" class="headerlink" title="自有日志框架"></a>自有日志框架</h1><h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="/images/WX20201124-161630.png">  </p>
+<ul>
+<li>测试类   </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestLogger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(TestLogger.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;TestLogger&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现1，简单实现info的打印"><a href="#实现1，简单实现info的打印" class="headerlink" title="实现1，简单实现info的打印"></a>实现1，简单实现info的打印</h2><ul>
+<li>StaticLoggerBinder，单例构建YHSimpleLogFactory</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ILoggerFactory loggerFactory;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String loggerFactoryClassStr = LoggerFactoryBinder.class.getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticLoggerBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerFactory = <span class="keyword">new</span> YHSimpleLogFactory();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILoggerFactory <span class="title">getLoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getLoggerFactoryClassStr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactoryClassStr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder SINGLETON = <span class="keyword">new</span> StaticLoggerBinder();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the StaticLoggerBinder singleton</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SINGLETON;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleLogFactory，使用ConcurrentMap，为每一个类只构建一个logger实例</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleLogger</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogger</span> <span class="keyword">implements</span> <span class="title">Logger</span></span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">&quot;%s,%s&quot;</span>, <span class="keyword">this</span>.name, msg));</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/*省略待实现方法*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最终输出</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger.TestLogger,TestLogger</span><br></pre></td></tr></table></figure>
+
+<h1 id="实现2，数据写入kafka"><a href="#实现2，数据写入kafka" class="headerlink" title="实现2，数据写入kafka"></a>实现2，数据写入kafka</h1><p>将实现1中的日志直接打印，改为写入kafka队列，可为每个类建立一个kafka producer</p>
+<ul>
+<li>YHSimpleKafkaLogFactory，此处要排除kafka中的log。因为是实验项目，所以使用了比较low的方法，直接对于kafka的日志，使用简单打印</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleKafkaLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleKafkaLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="comment">//对kafka自身的log，使用YHSimpleLogger</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (name.startsWith(<span class="string">&quot;org.apache.kafka&quot;</span>)) &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleKafkaLogger(name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>YHSimpleKafkaLogger，构建时实例化kafka producer</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class YHSimpleKafkaLogger implements Logger &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private static final String TOPIC &#x3D; &quot;test&quot;;</span><br><span class="line">    private static final String BROKER_LIST &#x3D; &quot;192.168.3.123:9092&quot;;</span><br><span class="line">    private static KafkaProducer&lt;String, String&gt; producer &#x3D; null;</span><br><span class="line"></span><br><span class="line">    public YHSimpleKafkaLogger(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        Properties properties &#x3D; new Properties();</span><br><span class="line">        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);</span><br><span class="line">        properties.put(ProducerConfig.ACKS_CONFIG, &quot;all&quot;);</span><br><span class="line">        properties.put(ProducerConfig.RETRIES_CONFIG, 0);</span><br><span class="line">        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);</span><br><span class="line">        properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);</span><br><span class="line">        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);</span><br><span class="line"></span><br><span class="line">        producer &#x3D; new KafkaProducer&lt;String, String&gt;(properties);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void info(String msg) &#123;</span><br><span class="line"></span><br><span class="line">        String str &#x3D; String.format(&quot;%s,%s&quot;, this.name, msg);</span><br><span class="line">        System.out.println(str);</span><br><span class="line">        producer.send(new ProducerRecord&lt;String, String&gt;(TOPIC, null, str));</span><br><span class="line">        producer.flush();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;*省略待实现方法*&#x2F;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>监听kafka队列，输出<br><img src="/images/WX20201124-175549.png"></li>
+</ul>
+<h2 id="实现3，基于kakfa的log4jappender将日志写入kafa队列"><a href="#实现3，基于kakfa的log4jappender将日志写入kafa队列" class="headerlink" title="实现3，基于kakfa的log4jappender将日志写入kafa队列"></a>实现3，基于kakfa的log4jappender将日志写入kafa队列</h2><p>引入maven依赖  </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;kafka-log4j-appender&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.4.0&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>编写日志配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=warn,stdout,KAFKA</span><br><span class="line"></span><br><span class="line"># stdout配置</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH\:mm\:ss&#125; [%p]-[%c] %m%n</span><br><span class="line">#日志输出</span><br><span class="line">log4j.appender.logfile=org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File=logs/test.log</span><br><span class="line">log4j.appender.logfile.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n</span><br><span class="line"></span><br><span class="line"># kafka配置</span><br><span class="line">#定义一个名为kafka 为Appender</span><br><span class="line">log4j.appender.KAFKA=org.apache.kafka.log4jappender.KafkaLog4jAppender</span><br><span class="line">#指定日志写入到Kafka的主题</span><br><span class="line">log4j.appender.KAFKA.topic=test</span><br><span class="line">#制定连接kafka的地址</span><br><span class="line">log4j.appender.KAFKA.brokerList=<span class="number">192.168</span>.<span class="number">3.123</span>:<span class="number">9092</span></span><br><span class="line">#压缩方式，默认为none</span><br><span class="line">log4j.appender.KAFKA.compressionType=none</span><br><span class="line">#指定Producer发送消息的方式，默认是false，即异步发送</span><br><span class="line">log4j.appender.KAFKA.syncSend=<span class="keyword">true</span></span><br><span class="line">#指定日志级别</span><br><span class="line">log4j.appender.KAFKA.Threshold=info</span><br><span class="line">log4j.appender.KAFKA.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.KAFKA.ignoreExceptions=<span class="keyword">false</span></span><br><span class="line">##kafka与服务端阻塞时长，超时则通过Failover Appender输出</span><br><span class="line">log4j.appender.KAFKA.maxBlockMs=<span class="number">1000</span></span><br><span class="line">log4j.appender.KAFKA.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L %% - %m%n</span><br><span class="line"></span><br><span class="line">#Failover</span><br><span class="line">log4j.appender.Failover=Failover</span><br><span class="line">log4j.appender.primary=KAFKA</span><br><span class="line">log4j.appender.appenders=logfile</span><br></pre></td></tr></table></figure>
+
+<font color= red >
+    注意  
+    1 log4j.rootLogger为warn，不可为info否则会出现deadlock，后续解释  
+    2 开启异步发送    log4j.appender.KAFKA.syncSend=true  
+    3 开启Failover，当kafkaappender异常时将异常写入本地文件  
+    4 减少与kafka服务端交互时间过长导致阻塞主业务，log4j.appender.KAFKA.maxBlockMs=1000
+</font> 
+
+<h3 id="kafkalog4jappender死锁"><a href="#kafkalog4jappender死锁" class="headerlink" title="kafkalog4jappender死锁"></a>kafkalog4jappender死锁</h3><p>启动日志测试程序后，出现程序卡死情况，通过<code>jstack 45978</code>追踪进程发现出现deadlock<br><img src="/images/WX20201125-195450.png">  </p>
+<p>可以看出<br>kafka线程想要获取0x0000000797610830锁，同时持有0x00000007976105d8<br>main主线程想要获取0x00000007976105d8锁，同时持有0x00000007976105d8，0x0000000797610748，0x0000000797610830<br>出现死锁，&lt;0x0000000797610830&gt; (a org.apache.log4j.spi.RootLogger)  &lt;0x00000007976105d8&gt; (a org.apache.kafka.clients.producer.internals.ProducerMetadata)<br>有人已经提问过<a target="_blank" rel="noopener" href="https://github.com/apache/kafka/pull/4375">KafkaLog4jAppender deadlocks when logging from producer network thread</a><br><code>at org.apache.kafka.clients.Metadata.update(Metadata.java:261)</code> 显示由261行开始再次申请org.apache.log4j.spi.RootLogger导致死锁</p>
+<p>将org.apache.kafka.clients.Metadata的日志权限提高至WARN,致使其不会打印INFO<br><code>log4j.logger.org.apache.kafka.clients.Metadata=WARN</code></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-Linux内存机制以及手动释放swap和内存"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/"
+    >Linux内存机制以及手动释放swap和内存</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/" class="article-date">
+  <time datetime="2020-10-29T01:29:43.000Z" itemprop="datePublished">2020-10-29</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>近期收到zabbix不断报警，一台服务器出现swap不足。</p>
+<h1 id="Linux-swap机制"><a href="#Linux-swap机制" class="headerlink" title="Linux swap机制"></a>Linux swap机制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Linux divides its physical RAM (random access memory) into chucks of memory called pages. Swapping is the process whereby a page of memory is copied to the preconfigured space on the hard disk, called swap space, to free up that page of memory. The combined sizes of the physical memory and the swap space is the amount of virtual memory available.</span><br><span class="line"></span><br><span class="line">Swap space in Linux is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, inactive pages in memory are moved to the swap space. While swap space can help machines with a small amount of RAM, it should not be considered a replacement for more RAM. Swap space is located on hard drives, which have a slower access time than physical memory.Swap space can be a dedicated swap partition (recommended), a swap file, or a combination of swap partitions and swap files.</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">Linux内核为了提高读写效率与速度，会将文件在内存中进行缓存，这部分内存就是Cache Memory(缓存内存)。即使你的程序运行结束后，Cache Memory也不会自动释放。这就会导致你在Linux系统中程序频繁读写文件后，你会发现可用物理内存变少。当系统的物理内存不够用的时候，就需要将物理内存中的一部分空间释放出来，以供当前运行的程序使用。那些被释放的空间可能来自一些很长时间没有什么操作的程序，这些被释放的空间被临时保存到Swap空间中，等到那些程序要运行时，再从Swap分区中恢复保存的数据到内存中。这样，系统总是在物理内存不够时，才进行Swap交换。</span><br></pre></td></tr></table></figure>
+
+<p>简单来说就是为了提高内核读写效率，会对文件进行内存缓存，但是内存空间有限，就会将一部分数据放在硬盘上，当程序需要再次使用到这部分数据，会将其恢复到内存中。</p>
+<h1 id="swap使用定位"><a href="#swap使用定位" class="headerlink" title="swap使用定位"></a>swap使用定位</h1><p>通过命令<code>free -m</code>，查看当前服务器swap的使用情况<br><img src="/images/WX20201102-090705.png"><br>在进程目录下，/proc/${PID}/smaps文件中记录着swap的使用情况，通过命令<br><code>for i in $(ls /proc | grep &quot;^[0-9]&quot; | awk &#39;$0&gt;100&#39;); do awk &#39;/Swap:/&#123;a=a+$2&#125;END&#123;print &#39;&quot;$i&quot;&#39;,a/1024&quot;M&quot;&#125;&#39; /proc/$i/smaps;done| sort -k2nr | head</code><br>查看系统中swap各进程占用<br><img src="/images/WX20201102-091129.png"><br>在查看具体进程<code>ps -ef|grep $&#123;PID&#125;</code><br>(之前有一个4040的java程序占用最高600多M，由于着急恢复系统，所以没有截图，暂时拿另一个java的进行记录说明)<br><img src="/images/WX20201102-091443.png"><br>发现是一个java程序，由于我们的服务都是跑在docker中的，所以需要定位具体是哪个docker容器中的java造成的<br>通过docker命令<code>docker top &lt;容器id&gt;</code>可以查看容器内的各个进程<br><img src="/images/WX20201102-091732.png">  </p>
+<h1 id="手动释放swap"><a href="#手动释放swap" class="headerlink" title="手动释放swap"></a>手动释放swap</h1><p>通过命令<code>swapon -s</code>可以查看到swap的挂载情况<br><img src="/images/WX20201029-092628.png"><br>通过命令<code>swapoff 挂载目录</code>将其释放到内存中，此时要保证内存空间充足，否则会造成死机  </p>
+<h1 id="Java程序造成swap高的定位"><a href="#Java程序造成swap高的定位" class="headerlink" title="Java程序造成swap高的定位"></a>Java程序造成swap高的定位</h1><p>通过程序日志发现，容器内部出现了无法解析数据库域名的情况(此情况在我们多个java服务都出现，似乎是docker容器的问题，暂时没找到具体问题和解决方案，只能通过重启服务解决)<br><img src="/images/WX20201102-092554.png"> </p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-zabbix"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/10/10/zabbix/"
+    >zabbix</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/10/10/zabbix/" class="article-date">
+  <time datetime="2020-10-10T01:08:37.000Z" itemprop="datePublished">2020-10-10</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="docker部署zabbix-server"><a href="#docker部署zabbix-server" class="headerlink" title="docker部署zabbix-server"></a>docker部署zabbix-server</h1><h2 id="部署MySQL数据库"><a href="#部署MySQL数据库" class="headerlink" title="部署MySQL数据库"></a>部署MySQL数据库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mysql-server -t \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -d mysql:5.7  \</span><br><span class="line">--character-set-server&#x3D;utf8 --collation-server&#x3D;utf8_bin</span><br></pre></td></tr></table></figure>
+<h2 id="部署zabbix-server"><a href="#部署zabbix-server" class="headerlink" title="部署zabbix-server"></a>部署zabbix-server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-server-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      -p 10051:10051 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-server-mysql:latest</span><br></pre></td></tr></table></figure>
+<h2 id="部署web-nginx-连接到zabbix和mysql"><a href="#部署web-nginx-连接到zabbix和mysql" class="headerlink" title="部署web nginx 连接到zabbix和mysql"></a>部署web nginx 连接到zabbix和mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run --name zabbix-web-nginx-mysql -t \</span><br><span class="line">      -e DB_SERVER_HOST&#x3D;&quot;mysql-server&quot; \</span><br><span class="line">      -e MYSQL_DATABASE&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      -e MYSQL_ROOT_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">      --link mysql-server:mysql \</span><br><span class="line">      --link zabbix-server-mysql:zabbix-server \</span><br><span class="line">      -p 8080:80 \</span><br><span class="line">      -d zabbix&#x2F;zabbix-web-nginx-mysql:latest</span><br></pre></td></tr></table></figure>
+<h2 id="修改Web中文乱码"><a href="#修改Web中文乱码" class="headerlink" title="修改Web中文乱码"></a>修改Web中文乱码</h2><p>下载<a target="_blank" rel="noopener" href="https://freefontsdownload.net/free-simkai-font-137629.htm">中文字体</a><br>覆盖至容器zabbix-web-nginx-mysql:/usr/share/zabbix/assets/fonts/DejaVuSans.ttf  </p>
+<h1 id="zabbix-agent安装"><a href="#zabbix-agent安装" class="headerlink" title="zabbix-agent安装"></a>zabbix-agent安装</h1><h2 id="添加zabbix-agent-Repository-Ubuntu-16-04"><a href="#添加zabbix-agent-Repository-Ubuntu-16-04" class="headerlink" title="添加zabbix-agent Repository(Ubuntu 16.04)"></a>添加zabbix-agent Repository(Ubuntu 16.04)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.0&#x2F;ubuntu&#x2F;pool&#x2F;main&#x2F;z&#x2F;zabbix-release&#x2F;zabbix-release_4.0-3+xenial_all.deb </span><br><span class="line">dpkg -i zabbix-release_4.0-3+xenial_all.deb</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装zabbix-agent"><a href="#安装zabbix-agent" class="headerlink" title="安装zabbix-agent"></a>安装zabbix-agent</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install zabbix-agent</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">LogFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.log </span><br><span class="line"></span><br><span class="line">PidFile&#x3D;&#x2F;tmp&#x2F;zabbix_agentd.pid</span><br><span class="line">#server端ip</span><br><span class="line">Server&#x3D;******</span><br><span class="line"></span><br><span class="line">ListenPort&#x3D;10050</span><br><span class="line"></span><br><span class="line">StartAgents&#x3D;5</span><br><span class="line"></span><br><span class="line">#ServerActive&#x3D;192.168.0.81 #注释掉主动模式的配置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Timeout&#x3D;30</span><br><span class="line"></span><br><span class="line">Include&#x3D;&#x2F;etc&#x2F;zabbix&#x2F;zabbix_agentd.d&#x2F;*.conf</span><br></pre></td></tr></table></figure>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start zabbix-agent.service </span><br></pre></td></tr></table></figure>
+
+<h2 id="监控配置"><a href="#监控配置" class="headerlink" title="监控配置"></a>监控配置</h2><h3 id="配置主机"><a href="#配置主机" class="headerlink" title="配置主机"></a>配置主机</h3><p><img src="/images/WX20201010-112402.png" alt="配置主机"></p>
+<h2 id="Web网页监控"><a href="#Web网页监控" class="headerlink" title="Web网页监控"></a>Web网页监控</h2><p>主机-&gt;web场景-&gt;创建web场景  </p>
+<ol>
+<li>场景<br><img src="/images/WX20201010-134325.png" alt="web监测">  </li>
+<li>步骤<br><img src="/images/WX20201010-134718.png" alt="web监测"></li>
+</ol>
+<h2 id="监控nginx状态码"><a href="#监控nginx状态码" class="headerlink" title="监控nginx状态码"></a>监控nginx状态码</h2><h3 id="创建nginx-access日志解析脚本"><a href="#创建nginx-access日志解析脚本" class="headerlink" title="创建nginx access日志解析脚本"></a>创建nginx access日志解析脚本</h3><p>每5分钟处理一次当日access日志，记录状态码和次数写入access.code.log文件  </p>
+<ul>
+<li>对于docker内的nginx，使用-i而不是用-it  </li>
+<li>生成的access.code.log需要授权给zabbix否则会出现无权限异常  </li>
+<li>添加zabbix到docker组，否则无权限执行docker命令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/zabbix/zabbix_agentd.d</span><br><span class="line">vim access.log.sh </span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写日志采集脚本  </li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">rm -rf /etc/zabbix/zabbix_agentd.d/access.code.log 2&gt;&amp;1 &gt; /dev/null</span><br><span class="line">date=`date &quot;+%d/%b/%Y:%H:&quot; -d &quot;5 min ago&quot;`</span><br><span class="line">today=`date &quot;+%Y-%m-%d&quot;`</span><br><span class="line">logpath=/var/log/nginx/access-$today.log</span><br><span class="line">dockerName=nginx</span><br><span class="line">docker exec -i nginx grep &quot;$date&quot; $logpath|awk -F &#x27; &#x27; &#x27;&#123;print $9&#125;&#x27; |awk  &#x27;&#123;sum[$1]+=1&#125;END&#123;for(c in sum)&#123;print c&quot;|&quot;sum[c]&#125;&#125;&#x27; &gt; /etc/zabbix/zabbix_agentd.d/access.code.log</span><br><span class="line"></span><br><span class="line">chown -Rf zabbix.zabbix /etc/zabbix/zabbix_agentd.d/access.code.log</span><br><span class="line"></span><br><span class="line">echo 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写zabbix方法脚本<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim access.code.sh </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">以下来定义函数方便 UserParameter 调用</span></span><br><span class="line">function c_200 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;200|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_202 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;202|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_301 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;301|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_302 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;302|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_304 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;304|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_400 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;400|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_403 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;403|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_404 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;404|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_405 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;405|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_502 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;502|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_503 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;503|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function c_504 &#123;</span><br><span class="line">        cat /etc/zabbix/zabbix_agentd.d/access.code.log|grep &quot;504|&quot;|awk -F &#x27;|&#x27; &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加zabbix监控配置   </li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim userparameter_nginx_access.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UserParameter=access.log,/etc/zabbix/zabbix_agentd.d/access.log.sh</span><br><span class="line">UserParameter=access.code[*],/etc/zabbix/zabbix_agentd.d/access.code.sh $1</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置zabbix监控项"><a href="#配置zabbix监控项" class="headerlink" title="配置zabbix监控项"></a>配置zabbix监控项</h3><ol>
+<li>创建模板<br>配置-&gt;模板-&gt;创建模板  </li>
+<li>创建监控项<br>模板-&gt;监控项-&gt;创建监控项  </li>
+<li>创建日志收集监控<br><img src="/images/WX20201010-141442.png" alt="收集监控">  </li>
+<li>创建code码监控<br><img src="/images/WX20201010-141549.png" alt="code监控">  </li>
+</ol>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream问题排查"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/"
+    >Nginx upstream prematurely closed connection while reading response header from upstream问题排查</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/09/11/Nginx-upstream-prematurely-closed-connection-while-reading-response-header-from-upstream%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="article-date">
+  <time datetime="2020-09-11T06:13:32.000Z" itemprop="datePublished">2020-09-11</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>线上nginx偶尔会出现<code>upstream prematurely closed connection while reading response header from upstream</code><br>即请求被上游服务关闭了。<br>查看nginx配置可发现配置了长连接。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keepalive <span class="number">16</span>;</span><br></pre></td></tr></table></figure>
+
+<p>nginx长连接是指，每个work建立一个http连接池，避免每个请求都建立socket连接使用完毕后释放造成系统调用的浪费。此类长连接在请求完毕后归还连接池。这个长连接的保持时间是有keepalive_timeout设置的，即连接超过这个时长，会被释放掉。<br>那么问题基本就定位到，<font size=6> 恰好一次请求由于时间过长，正好在其返回结果前连接被释放掉了。</font><br><font color=red>那么就有一个问题，当设定了长连接了，就会有一定概率致使某次请求恰好在连接释放后才能有返回，那不是一定会有这个问题存在么？所以是在并发不大的情况下，不需要开启长连接</font><br>最终暂时提高了keepalive_timeout的时长，减少此现象出现的概率，单本质上并未解决。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-java程序线上cpu飙高"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/"
+    >java程序线上cpu飙高(未完)</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/09/01/java%E7%A8%8B%E5%BA%8F%E7%BA%BF%E4%B8%8Acpu%E9%A3%99%E9%AB%98/" class="article-date">
+  <time datetime="2020-09-01T01:46:27.000Z" itemprop="datePublished">2020-09-01</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>线上系统出现8核cpu没核都达到100%，但是服务器并没有出现卡顿现象</p>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>通过top命令找到cpu高的pid<br>再通过top -Hp pid得到占用cpu高的对应线程，将其转为16进制tid<br>通过jstack pid|grep tid -C 10获取到占用cpu高的代码段  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pool-<span class="number">9941</span>-thread-<span class="number">1</span><span class="string">&quot; #263208 prio=5 os_prio=0 tid=0x00007f565405b000 nid=0x1f78 runnable [0x00007f55502aa000]</span></span><br><span class="line"><span class="string">   java.lang.Thread.State: RUNNABLE</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService.keywordHourDownloadBaidu(AdjustPricesService.java:455)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService$$FastClassBySpringCGLIB$$7a16392f.invoke(&lt;generated&gt;)</span></span><br><span class="line"><span class="string">	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)</span></span><br><span class="line"><span class="string">	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:684)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.service.AdjustPricesService$$EnhancerBySpringCGLIB$$f00dcb55.keywordHourDownloadBaidu(&lt;generated&gt;)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.AdjustPricesLogic.downloadFile(AdjustPricesLogic.java:103)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.SyncDispatchLogic.lambda$adjustPriceDispatch$0(SyncDispatchLogic.java:203)</span></span><br><span class="line"><span class="string">	at com.yunheit.sem.logic.SyncDispatchLogic$$Lambda$870/383155331.call(Unknown Source)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.FutureTask.run(FutureTask.java:266)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)</span></span><br><span class="line"><span class="string">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)</span></span><br><span class="line"><span class="string">	at java.lang.Thread.run(Thread.java:748)</span></span><br><span class="line"><span class="string">	</span></span><br></pre></td></tr></table></figure>
+
+<p>发现是一个循环造成</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (flag) &#123;</span><br><span class="line">   <span class="keyword">if</span> (index &lt; <span class="number">50</span>) &#123;</span><br><span class="line">               String status = iSemHandler.getReportStatus(account, reportId);</span><br><span class="line">               <span class="keyword">if</span> (status.equals(<span class="string">&quot;3&quot;</span>)) &#123;</span><br><span class="line">                   filePath = iSemHandler.getReportFilePath(account, reportId);</span><br><span class="line">                   flag = <span class="keyword">false</span>;</span><br><span class="line">               &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                   index += <span class="number">1</span>;</span><br><span class="line">                   <span class="keyword">try</span> &#123;</span><br><span class="line">                       Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">                   &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                       log.error(e.getMessage());</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<p>抛开代码优雅程度不说，此代码的意图在于不断重试获取响应，每次重试无响应后sleep3秒。<br>while死循环确实会造成cpu飙高，但是加入了Thread.sleep，释放cpu资源，但是不释放锁，就不会造成cpu飙高，与当前现象似乎不一致。<br>继续分析jstack，发现出现此代码段的地方总共有37个。那是否是由于不断切换线程造成cpu使用过高呢？开始追代码了  </p>
+<h2 id="问题定位，代码追踪"><a href="#问题定位，代码追踪" class="headerlink" title="问题定位，代码追踪"></a>问题定位，代码追踪</h2><p>使用了单线程池，结合现象想到了是否由于线程未释放导致出现了37个线程呢？  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">Future&lt;String&gt; future = executorService.submit(task);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    String s = future.get(<span class="number">10</span>, TimeUnit.MINUTES);</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + s);</span><br><span class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException | TimeoutException e) &#123;</span><br><span class="line">    XxlJobLogger.log(<span class="string">&quot;startAdjust:&quot;</span> + e.getMessage());</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    executorService.shutdown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>future.get(10, TimeUnit.MINUTES);</code>是一个阻塞方法，在指定的时间内会等待任务执行，超时则抛异常。<br><code>executorService.shutdown();</code>平滑的关闭ExecutorService，当此方法被调用时，ExecutorService停止接收新的任务并且等待已经提交的任务（包含提交正在执行和提交未执行）执行完成。当所有提交任务执行完毕，线程池即被关闭。<br>依据上面两条，确实可能会出现任务超时，但是没有完成，只是抛出异常，但是没有主动取消任务关闭线程。不过追踪日志未发现出现超时的异常，却出现了由于逻辑问题而造成的空指针异常。<code>java.lang.NullPointerException</code>.<br>线索到此又断了。<br><font color= red size=6>为什么jstack会定位到一个while中的if语句。</font><br><font color= red size=6>为什么服务器明明cpu全部飙满，缺未出现卡顿的现象。</font><br><font color= red size=6>如果不是由于逻辑导致cpu飙高，那是不是由于频繁GC导致的呢，但是看线程资源使用情况，确实是逻辑线程cpu使用率高</font>  </p>
+<p>由于服务被同事重启了，为拿到内存信息，只能等再次出现此问题的时候继续定位。<br><font color=b size=6>未完待续。。。。  </p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-jenkins部署oss"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/"
+    >jenkins部署oss</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/08/31/jenkins%E9%83%A8%E7%BD%B2oss/" class="article-date">
+  <time datetime="2020-08-31T11:01:51.000Z" itemprop="datePublished">2020-08-31</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>公司业务需求有一部分动态js代码会频繁更新，为了避免每次更新都重新部署，则通过将js代码放入到oss上。但也遇到了以下几个问题  </p>
+<ol>
+<li>手动上传。  </li>
+<li>测试与正式环境拆分不便利，每次都是在手动处理。  </li>
+</ol>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>通过Jenkins部署和oss的命令行工具ossutil来完成</p>
+<h3 id="需解决问题"><a href="#需解决问题" class="headerlink" title="需解决问题"></a>需解决问题</h3><ol>
+<li>区分是文件部署还是上传静态文件</li>
+<li>通过shell对oss的静态文件引用做替换，以达到不同环境引用不同地址的文件<h4 id="区分静态文件"><a href="#区分静态文件" class="headerlink" title="区分静态文件"></a>区分静态文件</h4>通过git命令和配置文件的配合<br>git获取本次提交的文件列表，与配置文件中的src_arr比对，如果命中则上传至对应的des_arr目录  </li>
+</ol>
+<p><code>注：若git发现没有新文件，则有可能是上次部署失败，即已拉取新文件，但没有执行后续上传，此时可能通过判断是否有新文件，如果没有则对比上次提交；但依旧无法避免上次提交失败，本次又有新提交的时候，导致上次静态文件更新没有上传，此问题还需有新解决方案</code></p>
+<p>配置文件格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#待上传文件目录  </span><br><span class="line">src_arr&#x3D;(src&#x2F;static&#x2F;img src&#x2F;static&#x2F;js)  </span><br><span class="line"></span><br><span class="line">#上传路径  </span><br><span class="line">des_arr&#x3D;(tester_beta&#x2F;static&#x2F;img tester_beta&#x2F;static&#x2F;img)  </span><br><span class="line">#应用路径  </span><br><span class="line">src_path&#x3D;()  </span><br><span class="line"></span><br><span class="line">#替换路径  </span><br><span class="line">des_path&#x3D;()  </span><br></pre></td></tr></table></figure>
+
+<p>执行脚本  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash -xe</span><br><span class="line">whoami </span><br><span class="line">groups</span><br><span class="line">############################################################</span><br><span class="line">#项目名称</span><br><span class="line">PRJ_NAME&#x3D;$&#123;JOB_NAME&#125;</span><br><span class="line">cd ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#bash $&#123;JENKINS_HOME&#125;&#x2F;oss.sh $&#123;PRJ_NAME&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#获取rebuild标示</span><br><span class="line">#rebuild&#x3D;$(cat ~&#x2F;workspace&#x2F;$&#123;JOB_NAME&#125;&#x2F;rebuild)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">source ~&#x2F;workspace&#x2F;$&#123;PRJ_NAME&#125;&#x2F;oss.conf</span><br><span class="line">rebuild&#x3D;0</span><br><span class="line">#遍历文件，判断是需要上传oss还是需要重新部署</span><br><span class="line">#获取本次提交文件列表</span><br><span class="line">files&#x3D;$(git diff --name-only HEAD~ HEAD)</span><br><span class="line"></span><br><span class="line">src_arr_len&#x3D;$&#123;#src_arr[@]&#125;</span><br><span class="line"></span><br><span class="line">des_arr_len&#x3D;$&#123;#des_arr[@]&#125;</span><br><span class="line">for file in $files</span><br><span class="line">do</span><br><span class="line"></span><br><span class="line">  if [ ! -f &quot;$file&quot; ];then</span><br><span class="line">    #文件不存在，继续本次循环</span><br><span class="line">    echo $file </span><br><span class="line">  else</span><br><span class="line">	</span><br><span class="line">    for ((i&#x3D;0;i&lt;$src_arr_len;i++))</span><br><span class="line">    do</span><br><span class="line">      </span><br><span class="line">      src&#x3D;$&#123;src_arr[i]&#125;</span><br><span class="line">      des&#x3D;$&#123;des_arr[i]&#125;</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line">      src_len&#x3D;$&#123;#src&#125;</span><br><span class="line">      f&#x3D;$&#123;file:0:$src_len&#125;</span><br><span class="line">      </span><br><span class="line">      if [[ -z &quot;$f&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      elif [[ -z &quot;$src&quot; ]] ;then</span><br><span class="line">        echo &quot;空字符串&quot;</span><br><span class="line">      #如果文件以src开头，则执行上传</span><br><span class="line">      elif [[ &quot;$f&quot; &#x3D;&#x3D; &quot;$src&quot; ]];then</span><br><span class="line">        $&#123;JENKINS_HOME&#125;&#x2F;ossutil --config-file&#x3D;$&#123;JENKINS_HOME&#125;&#x2F;oss_yunhe_static cp -f $file $des</span><br><span class="line">      else</span><br><span class="line">      #标记重新部署</span><br><span class="line">          rebuild&#x3D;1</span><br><span class="line">      fi</span><br><span class="line">      </span><br><span class="line">    done</span><br><span class="line">  fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [[ &quot;$rebuild&quot; &#x3D;&#x3D; 0 ]]; then</span><br><span class="line">   echo &quot;只上传oss&quot;</span><br><span class="line">else</span><br><span class="line">   echo &#39;构建&#39;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>注:脚本开头使用的是#!/bin/bash -xe，处理#!/bin/bash 还必须有-xe，否则Jenkins不识别source，if等语法，至于为什么还不懂</code></p>
+<h4 id="不同环境使用不同地址的文件"><a href="#不同环境使用不同地址的文件" class="headerlink" title="不同环境使用不同地址的文件"></a>不同环境使用不同地址的文件</h4><p>  例如<br>   <code>   本地开发直接引用本地文件    beta测试引用的是oss beta地址      正式环境引用的是oss 正式地址   </code><br>   前提要求前端对静态页面的引用路径做统一格式处理，设定全局变量path，脚本会根据环境替换此path</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-延时时间轮"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/"
+    >延时时间轮</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/08/28/%E5%BB%B6%E6%97%B6%E6%97%B6%E9%97%B4%E8%BD%AE/" class="article-date">
+  <time datetime="2020-08-28T08:20:10.000Z" itemprop="datePublished">2020-08-28</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>公司项目中要求对事件做延迟处理，且延迟时间可配置。</p>
+<h2 id="原解决办法"><a href="#原解决办法" class="headerlink" title="原解决办法"></a>原解决办法</h2><p>事件放入队列，因为一些历史原因，被放在了redis队列中。由一主线程定时遍历队列，对于到期事件进行处理。<br>此方案是最容易想到和实现的，但它有着明显的错误</p>
+<ol>
+<li>每次都要遍历全部事件，并对事件判断是否到期</li>
+<li>若无序很可能会出现一个很久才要执行的事件被放在靠前位置</li>
+<li>只有一个队列，随着事件的加入会无线变大，致使一次遍历越来越长，而导致快要处理的事件由于本次循环还未结束无法处理(当然这可以通过多线程遍历，和子线程执行方式解决)</li>
+</ol>
+<h2 id="思考解决方案"><a href="#思考解决方案" class="headerlink" title="思考解决方案"></a>思考解决方案</h2><p>第一时间想到的是是否可将事件按不同执行时间段分开存放，非常类似与hash负载均衡算法。</p>
+<h2 id="延迟时间轮"><a href="#延迟时间轮" class="headerlink" title="延迟时间轮"></a>延迟时间轮</h2><p>在翻阅相关资料后，发现了延迟时间轮算法。个人总结为执行事件队列只维护一个固定周期的队列，而超过此周期的事件会被升级到上层时间轮，同时各上层时间轮，按自己间隔周期遍历自己时间轮，并将下一个周期的事件降级进入下级时间轮。<br><img src="/images/WX20200828-163543.png" alt="时间轮"></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-docker"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/08/28/docker/"
+    >docker</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/08/28/docker/" class="article-date">
+  <time datetime="2020-08-28T00:24:45.000Z" itemprop="datePublished">2020-08-28</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h3 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo curl -sSL https:&#x2F;&#x2F;get.docker.com&#x2F; | sh</span><br><span class="line"></span><br><span class="line">#检查是否安装成功</span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line">sudo curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.8.0&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod a+x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装镜像"><a href="#安装镜像" class="headerlink" title="安装镜像"></a>安装镜像</h3><h2 id="docker安装redis"><a href="#docker安装redis" class="headerlink" title="docker安装redis"></a>docker安装redis</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;opt&#x2F;redis&#x2F;data</span><br><span class="line">vim &#x2F;opt&#x2F;redis&#x2F;Dockerfile</span><br><span class="line">***************************</span><br><span class="line">FROM debian:jessie</span><br><span class="line"></span><br><span class="line"># add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added</span><br><span class="line">RUN groupadd -r redis &amp;&amp; useradd -r -g redis redis</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \</span><br><span class="line">                ca-certificates \</span><br><span class="line">                wget \</span><br><span class="line">        &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;*</span><br><span class="line"></span><br><span class="line"># grab gosu for easy step-down from root</span><br><span class="line">ENV GOSU_VERSION 1.7</span><br><span class="line">RUN set -x \</span><br><span class="line">        &amp;&amp; wget -O &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu &quot;https:&#x2F;&#x2F;github.com&#x2F;tianon&#x2F;gosu&#x2F;releases&#x2F;download&#x2F;$GOSU_VERSION&#x2F;gosu-$(dpkg --print-architecture)&quot; \</span><br><span class="line">        &amp;&amp; wget -O &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc &quot;https:&#x2F;&#x2F;github.com&#x2F;tianon&#x2F;gosu&#x2F;releases&#x2F;download&#x2F;$GOSU_VERSION&#x2F;gosu-$(dpkg --print-architecture).asc&quot; \</span><br><span class="line">        &amp;&amp; export GNUPGHOME&#x3D;&quot;$(mktemp -d)&quot; \</span><br><span class="line">        &amp;&amp; gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \</span><br><span class="line">        &amp;&amp; gpg --batch --verify &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu \</span><br><span class="line">        &amp;&amp; rm -r &quot;$GNUPGHOME&quot; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu.asc \</span><br><span class="line">        &amp;&amp; chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;gosu \</span><br><span class="line">        &amp;&amp; gosu nobody true</span><br><span class="line"></span><br><span class="line">ENV REDIS_VERSION 3.2.0</span><br><span class="line">ENV REDIS_DOWNLOAD_URL http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-3.2.0.tar.gz</span><br><span class="line">ENV REDIS_DOWNLOAD_SHA1 0c1820931094369c8cc19fc1be62f598bc5961ca</span><br><span class="line"></span><br><span class="line"># for redis-sentinel see: http:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;sentinel</span><br><span class="line">RUN buildDeps&#x3D;&#39;gcc libc6-dev make&#39; \</span><br><span class="line">        &amp;&amp; set -x \</span><br><span class="line">        &amp;&amp; apt-get update &amp;&amp; apt-get install -y $buildDeps --no-install-recommends \</span><br><span class="line">        &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;* \</span><br><span class="line">        &amp;&amp; wget -O redis.tar.gz &quot;$REDIS_DOWNLOAD_URL&quot; \</span><br><span class="line">        &amp;&amp; echo &quot;$REDIS_DOWNLOAD_SHA1 *redis.tar.gz&quot; | sha1sum -c - \</span><br><span class="line">        &amp;&amp; mkdir -p &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; tar -xzf redis.tar.gz -C &#x2F;usr&#x2F;src&#x2F;redis --strip-components&#x3D;1 \</span><br><span class="line">        &amp;&amp; rm redis.tar.gz \</span><br><span class="line">        &amp;&amp; make -C &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; make -C &#x2F;usr&#x2F;src&#x2F;redis install \</span><br><span class="line">        &amp;&amp; rm -r &#x2F;usr&#x2F;src&#x2F;redis \</span><br><span class="line">        &amp;&amp; apt-get purge -y --auto-remove $buildDeps</span><br><span class="line"></span><br><span class="line">RUN mkdir &#x2F;data &amp;&amp; chown redis:redis &#x2F;data</span><br><span class="line">VOLUME &#x2F;data</span><br><span class="line">WORKDIR &#x2F;data</span><br><span class="line"></span><br><span class="line">COPY docker-entrypoint.sh &#x2F;usr&#x2F;local&#x2F;bin&#x2F;</span><br><span class="line">ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</span><br><span class="line"></span><br><span class="line">EXPOSE 6379</span><br><span class="line">CMD [ &quot;redis-server&quot; ]</span><br><span class="line">***************************</span><br><span class="line">cd &#x2F;opt&#x2F;redis</span><br><span class="line">docker build . -t redis:3.2</span><br><span class="line"></span><br><span class="line">docker run --name redis -v &#x2F;work&#x2F;redis&#x2F;data:&#x2F;data  --net&#x3D;host -d redis  redis-server --appendonly yes</span><br></pre></td></tr></table></figure>
+<h2 id="docker安装mysql"><a href="#docker安装mysql" class="headerlink" title="docker安装mysql"></a>docker安装mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vim utf8mb4.cnf </span><br><span class="line">**********************************************************</span><br><span class="line">[client]</span><br><span class="line">default-character-set &#x3D; utf8mb4</span><br><span class="line">[mysql]</span><br><span class="line">default-character-set &#x3D; utf8mb4</span><br><span class="line">[mysqld]</span><br><span class="line">character-set-client-handshake &#x3D; FALSE  # 忽略客户端的字符集，使用服务器的设置</span><br><span class="line">character-set-server &#x3D; utf8mb4</span><br><span class="line">collation-server &#x3D; utf8mb4_unicode_ci</span><br><span class="line">**********************************************************</span><br><span class="line"></span><br><span class="line">vim Dockerfile </span><br><span class="line">**********************************************************</span><br><span class="line">FROM mysql:5.6</span><br><span class="line">COPY utf8mb4.cnf &#x2F;etc&#x2F;mysql&#x2F;conf.d&#x2F;</span><br><span class="line">**********************************************************</span><br><span class="line">docker build -t mysql_utf-8 .</span><br><span class="line">docker run --restart&#x3D;always -d -v &#x2F;work&#x2F;mysql:&#x2F;var&#x2F;lib&#x2F;mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD&#x3D;daochi12e --name mysql mysql_utf-8</span><br></pre></td></tr></table></figure> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+  </article>
   
-</aside>
-        
-      </div>
-      <footer id="footer">
+
   
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
   <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 Li Hao<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> Li Hao
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
   </div>
 </footer>
-    </div>
-    <nav id="mobile-nav">
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
   
-    <a href="/" class="mobile-nav-link">Home</a>
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
+  </div>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  <ul class="nav nav-main">
     
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
 
 
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+    
   </div>
 </body>
+
 </html>

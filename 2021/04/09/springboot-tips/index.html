@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>springboot-tips |  Hexo</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <!-- mermaid -->
+      
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-springboot-tips"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  springboot-tips
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/04/09/springboot-tips/" class="article-date">
+  <time datetime="2021-04-09T00:27:30.000Z" itemprop="datePublished">2021-04-09</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">8 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="一-定时任务"><a href="#一-定时任务" class="headerlink" title="一.定时任务"></a>一.定时任务</h1><p>springboot启动定时任务需要在启动类上添加<code>@EnableScheduling</code>，并在定时任务方法上设定<code>@Scheduled(cron = &quot;0/5 * * * * ?&quot;)</code>  </p>
+<h2 id="1-yaml配置控制调度"><a href="#1-yaml配置控制调度" class="headerlink" title="1. yaml配置控制调度"></a>1. yaml配置控制调度</h2><p>由于不同环境(本地，测试，生产)对具体调度的需求不同，硬编码式的调度无法满足，需将调度配置写进配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scheduled:</span><br><span class="line">  cron: <span class="number">0</span>/<span class="number">5</span> * * * * ?</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>@Schedule</code> 中获取配置，并添加默认配置”-“表示默认不执行调度</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Scheduled(cron = &quot;$&#123;scheduled.cron:-&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(dateFmt.format(<span class="keyword">new</span> Date()) + <span class="string">&quot; : 执行定时任务&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-关闭调度任务"><a href="#2-关闭调度任务" class="headerlink" title="2. 关闭调度任务"></a>2. 关闭调度任务</h2><h3 id="使用”-“方式"><a href="#使用”-“方式" class="headerlink" title="使用”-“方式"></a>使用”-“方式</h3><p>可在yaml配置文件中将调度时间设置为”-“</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scheduled:</span><br><span class="line">  cron: <span class="string">&quot;-&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用定时开关"><a href="#使用定时开关" class="headerlink" title="使用定时开关"></a>使用定时开关</h3><p>如果想直接将全部定时任务关闭，一个个修改定时任务时间过于麻烦，直接去掉<code>@EnableScheduling</code>又造成代码变动，则可通过springboot中的<code>@Conditional</code>来动态实现此功能</p>
+<p>设置定时调度总开关enable，如果是true则定时任务剩下，否则则不生效</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scheduled:</span><br><span class="line">  enable: <span class="keyword">false</span></span><br><span class="line">  cron: <span class="string">&quot;-&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>@Scheduled</code> 注解，是被一个叫做<code>ScheduledAnnotationBeanPostProcessor</code>的类所拦截的，所以我们可以根据配置，决定是否创建这个 bean，如果没有这个 bean，<code>@Scheduled</code> 就不会被拦截，那么定时任务肯定不会执行了，有了这个思路，实现起来就很简单了。<strong>需要注意的是：这种方式，启动类上面的 @EnableScheduling 需要去掉。</strong></p>
+<p>然后创建一个 ScheduledCondtion 类，配合**@ConditionalOnProperty**，内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(prefix=&quot;scheduled&quot;,name = &quot;enable&quot;, havingValue = &quot;true&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ScheduledAnnotationBeanPostProcessor <span class="title">processor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ScheduledAnnotationBeanPostProcessor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-定时任务多线程"><a href="#3-定时任务多线程" class="headerlink" title="3. 定时任务多线程"></a>3. 定时任务多线程</h2><p>springboot默认使用的是单线程，通过<code>@EnableScheduling</code>可以看到，引入了SchedulingConfiguration.class</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Import(&#123;SchedulingConfiguration.class&#125;)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableScheduling &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过追踪<code>org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor</code>发现其finishRegistration方法来加载自定义线程池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">finishRegistration</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.scheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.registrar.setScheduler(<span class="keyword">this</span>.scheduler);</span><br><span class="line">        &#125;</span><br><span class="line">				<span class="comment">// 1.查找是否有SchedulingConfigurer类型的自定义bean</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.beanFactory <span class="keyword">instanceof</span> ListableBeanFactory) &#123;</span><br><span class="line">            Map&lt;String, SchedulingConfigurer&gt; beans = ((ListableBeanFactory)<span class="keyword">this</span>.beanFactory).getBeansOfType(SchedulingConfigurer.class);</span><br><span class="line">            List&lt;SchedulingConfigurer&gt; configurers = <span class="keyword">new</span> ArrayList(beans.values());</span><br><span class="line">            AnnotationAwareOrderComparator.sort(configurers);</span><br><span class="line">            Iterator var3 = configurers.iterator();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">                SchedulingConfigurer configurer = (SchedulingConfigurer)var3.next();</span><br><span class="line">                <span class="comment">// 1.1使用configureTasks方法给this.registrar初始化</span></span><br><span class="line">                configurer.configureTasks(<span class="keyword">this</span>.registrar);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">				<span class="comment">// 2.如果未找到自定义SchedulingConfigurer</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.registrar.hasTasks() &amp;&amp; <span class="keyword">this</span>.registrar.getScheduler() == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Assert.state(<span class="keyword">this</span>.beanFactory != <span class="keyword">null</span>, <span class="string">&quot;BeanFactory must be set to find scheduler by type&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 2.1 查找TaskScheduler类型的bean，不根据名字，初始化taskScheduler</span></span><br><span class="line">                <span class="keyword">this</span>.registrar.setTaskScheduler((TaskScheduler)<span class="keyword">this</span>.resolveSchedulerBean(<span class="keyword">this</span>.beanFactory, TaskScheduler.class, <span class="keyword">false</span>));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (NoUniqueBeanDefinitionException var9) &#123;</span><br><span class="line">                <span class="keyword">this</span>.logger.trace(<span class="string">&quot;Could not find unique TaskScheduler bean&quot;</span>, var9);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 2.2 查找TaskScheduler类型的bean，根据名字，初始化taskScheduler</span></span><br><span class="line">                    <span class="keyword">this</span>.registrar.setTaskScheduler((TaskScheduler)<span class="keyword">this</span>.resolveSchedulerBean(<span class="keyword">this</span>.beanFactory, TaskScheduler.class, <span class="keyword">true</span>));</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NoSuchBeanDefinitionException var8) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">                        <span class="keyword">this</span>.logger.info(<span class="string">&quot;More than one TaskScheduler bean exists within the context, and none is named &#x27;taskScheduler&#x27;. Mark one of them as primary or name it &#x27;taskScheduler&#x27; (possibly as an alias); or implement the SchedulingConfigurer interface and call ScheduledTaskRegistrar#setScheduler explicitly within the configureTasks() callback: &quot;</span> + var9.getBeanNamesFound());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (NoSuchBeanDefinitionException var10) &#123;</span><br><span class="line">                <span class="keyword">this</span>.logger.trace(<span class="string">&quot;Could not find default TaskScheduler bean&quot;</span>, var10);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.registrar.setScheduler(<span class="keyword">this</span>.resolveSchedulerBean(<span class="keyword">this</span>.beanFactory, ScheduledExecutorService.class, <span class="keyword">false</span>));</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NoUniqueBeanDefinitionException var6) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.logger.trace(<span class="string">&quot;Could not find unique ScheduledExecutorService bean&quot;</span>, var6);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="keyword">this</span>.registrar.setScheduler(<span class="keyword">this</span>.resolveSchedulerBean(<span class="keyword">this</span>.beanFactory, ScheduledExecutorService.class, <span class="keyword">true</span>));</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (NoSuchBeanDefinitionException var5) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (<span class="keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">                            <span class="keyword">this</span>.logger.info(<span class="string">&quot;More than one ScheduledExecutorService bean exists within the context, and none is named &#x27;taskScheduler&#x27;. Mark one of them as primary or name it &#x27;taskScheduler&#x27; (possibly as an alias); or implement the SchedulingConfigurer interface and call ScheduledTaskRegistrar#setScheduler explicitly within the configureTasks() callback: &quot;</span> + var6.getBeanNamesFound());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NoSuchBeanDefinitionException var7) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.logger.trace(<span class="string">&quot;Could not find default ScheduledExecutorService bean&quot;</span>, var7);</span><br><span class="line">                    <span class="keyword">this</span>.logger.info(<span class="string">&quot;No TaskScheduler/ScheduledExecutorService bean found for scheduled processing&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.registrar.afterPropertiesSet();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>找到bean后，调用<code>afterPropertiesSet</code>方法，使用的是一个单线程模型执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.scheduleTasks();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">scheduleTasks</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.taskScheduler == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.localExecutor = Executors.newSingleThreadScheduledExecutor();</span><br><span class="line">    <span class="keyword">this</span>.taskScheduler = <span class="keyword">new</span> ConcurrentTaskScheduler(<span class="keyword">this</span>.localExecutor);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//other code....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由此我们可以自定义一个多线程池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(prefix = &quot;scheduled&quot;, name = &quot;enable&quot;, havingValue = &quot;true&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledConfig</span> <span class="keyword">implements</span> <span class="title">SchedulingConfigurer</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureTasks</span><span class="params">(ScheduledTaskRegistrar scheduledTaskRegistrar)</span> </span>&#123;</span><br><span class="line">    scheduledTaskRegistrar.setScheduler(TaskScheduler());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean(destroyMethod = &quot;shutdown&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Executor <span class="title">TaskScheduler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Executors.newScheduledThreadPool(<span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="二-异步任务"><a href="#二-异步任务" class="headerlink" title="二.异步任务"></a>二.异步任务</h1><p>springboot启动定时任务需要在启动类上添加<code>@EnableAsync</code>，并在异步方法上添加<code>Async</code></p>
+<h2 id="1-异步线程池"><a href="#1-异步线程池" class="headerlink" title="1.异步线程池"></a>1.异步线程池</h2><p>通过<code>ThreadPoolTaskExecutor</code>创建异步线程池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Log4j2</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExecutorConfig</span>  </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean(destroyMethod = &quot;shutdown&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ThreadPoolTaskExecutor <span class="title">asyncExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ThreadPoolTaskExecutor executor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line">    executor.setCorePoolSize(<span class="number">10</span>);</span><br><span class="line">    executor.setMaxPoolSize(<span class="number">20</span>);</span><br><span class="line">    executor.setQueueCapacity(<span class="number">200</span>);</span><br><span class="line">    executor.setKeepAliveSeconds(<span class="number">60</span>);</span><br><span class="line">    executor.setThreadNamePrefix(<span class="string">&quot;taskExecutor-&quot;</span>);</span><br><span class="line">    executor.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">    <span class="comment">//核心线程数10：线程池创建时候初始化的线程数</span></span><br><span class="line">    executor.setCorePoolSize(<span class="number">10</span>);</span><br><span class="line">    <span class="comment">//最大线程数20：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程</span></span><br><span class="line">    executor.setMaxPoolSize(<span class="number">20</span>);</span><br><span class="line">    <span class="comment">//缓冲队列200：用来缓冲执行任务的队列</span></span><br><span class="line">    executor.setQueueCapacity(<span class="number">200</span>);</span><br><span class="line">    <span class="comment">//允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁</span></span><br><span class="line">    executor.setKeepAliveSeconds(<span class="number">60</span>);</span><br><span class="line">    <span class="comment">//线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池</span></span><br><span class="line">    executor.setThreadNamePrefix(<span class="string">&quot;icard-&quot;</span>);</span><br><span class="line">    <span class="comment">//线程池对拒绝任务的处理策略：这里采用了CallerRunsPolicy策略，当线程池没有处理能力的时候，该策略会直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务</span></span><br><span class="line">    executor.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">    executor.initialize();</span><br><span class="line">    executor.initialize();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-线程池隔离"><a href="#2-线程池隔离" class="headerlink" title="2.线程池隔离"></a>2.线程池隔离</h2><p>业务上为了避免不同类型异步任务相互影响，需要线程池隔离，通过设置bean的name</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean(destroyMethod = &quot;shutdown&quot;, name = &quot;common&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ThreadPoolTaskExecutor <span class="title">asyncExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">ThreadPoolTaskExecutor executor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line"><span class="comment">//核心线程数10：线程池创建时候初始化的线程数</span></span><br><span class="line">executor.setCorePoolSize(<span class="number">10</span>);</span><br><span class="line"><span class="comment">//最大线程数20：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程</span></span><br><span class="line">executor.setMaxPoolSize(<span class="number">20</span>);</span><br><span class="line"><span class="comment">//缓冲队列200：用来缓冲执行任务的队列</span></span><br><span class="line">executor.setQueueCapacity(<span class="number">200</span>);</span><br><span class="line"><span class="comment">//允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁</span></span><br><span class="line">executor.setKeepAliveSeconds(<span class="number">60</span>);</span><br><span class="line"><span class="comment">//线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池</span></span><br><span class="line">executor.setThreadNamePrefix(<span class="string">&quot;icard-&quot;</span>);</span><br><span class="line"><span class="comment">//线程池对拒绝任务的处理策略：这里采用了CallerRunsPolicy策略，当线程池没有处理能力的时候，该策略会直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务</span></span><br><span class="line">executor.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">executor.initialize();</span><br><span class="line"><span class="keyword">return</span> executor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean(destroyMethod = &quot;shutdown&quot;, name = &quot;asyncFile&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ThreadPoolTaskExecutor <span class="title">asyncFileExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">ThreadPoolTaskExecutor executor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line"><span class="comment">//核心线程数10：线程池创建时候初始化的线程数</span></span><br><span class="line">executor.setCorePoolSize(<span class="number">10</span>);</span><br><span class="line"><span class="comment">//最大线程数20：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程</span></span><br><span class="line">executor.setMaxPoolSize(<span class="number">20</span>);</span><br><span class="line"><span class="comment">//缓冲队列200：用来缓冲执行任务的队列</span></span><br><span class="line">executor.setQueueCapacity(<span class="number">200</span>);</span><br><span class="line"><span class="comment">//允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁</span></span><br><span class="line">executor.setKeepAliveSeconds(<span class="number">60</span>);</span><br><span class="line"><span class="comment">//线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池</span></span><br><span class="line">executor.setThreadNamePrefix(<span class="string">&quot;icard-file-&quot;</span>);</span><br><span class="line"><span class="comment">//线程池对拒绝任务的处理策略：这里采用了CallerRunsPolicy策略，当线程池没有处理能力的时候，该策略会直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务</span></span><br><span class="line">executor.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">executor.initialize();</span><br><span class="line"><span class="keyword">return</span> executor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>并在使用异步方法时指定bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Scheduled(cron = &quot;0/1 * * * * ?&quot;)</span></span><br><span class="line"><span class="meta">@Async(&quot;asyncFile&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  log.info(<span class="string">&quot;test1&quot;</span>);</span><br><span class="line">  Thread.sleep(<span class="number">10000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2021/04/09/springboot-tips/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/04/13/java%E7%A8%8B%E5%BA%8Flinux%E4%B8%8B%E6%9C%8D%E5%8A%A1%E5%8D%A1%E6%AD%BB/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            java程序linux下服务卡死
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/03/18/ubuntu16-04%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">ubuntu16.04部署k8s集群</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> Li Hao
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+  </div>
+</body>
+
+</html>
