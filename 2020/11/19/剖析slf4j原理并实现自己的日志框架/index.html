@@ -1,167 +1,301 @@
+
+
 <!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
-<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Li Hao">
+  <meta name="keywords" content="">
+  
+  <title>剖析slf4j原理并实现自己的日志框架 - Lee</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
   
 
-    <head>
-      <meta charset="utf-8" />
-        
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1"
-      />
-      <title>剖析slf4j原理并实现自己的日志框架 |  Hexo</title>
-  <meta name="generator" content="hexo-theme-ayer">
-      
-      <link rel="shortcut icon" href="/favicon.ico" />
-       
-<link rel="stylesheet" href="/dist/main.css">
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
-      />
-      
-<link rel="stylesheet" href="/css/custom.css">
- 
-      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-       
- 
 
-      <!-- mermaid -->
-      
-    </head>
-  </html>
-</html>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
 
 
 <body>
-  <div id="app">
-    
-      
-    <main class="content on">
-      <section class="outer">
-  <article
-  id="post-剖析slf4j原理并实现自己的日志框架"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  剖析slf4j原理并实现自己的日志框架
-</h1>
- 
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
 
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" class="article-date">
-  <time datetime="2020-11-19T00:56:42.000Z" itemprop="datePublished">2020-11-19</time>
-</a>   
-<div class="word_count">
-    <span class="post-time">
-        <span class="post-meta-item-icon">
-            <i class="ri-quill-pen-line"></i>
-            <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1.7k</span>
-        </span>
-    </span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
 
-    <span class="post-time">
-        &nbsp; | &nbsp;
-        <span class="post-meta-item-icon">
-            <i class="ri-book-open-line"></i>
-            <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">8 min</span>
-        </span>
-    </span>
-</div>
- 
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
-      
-    <div class="tocbot"></div>
+  </div>
+</nav>
 
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="剖析slf4j原理并实现自己的日志框架">
+              
+            </span>
 
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-19 08:56" pubdate>
+        2020年11月19日 早上
+      </time>
+    </span>
+  
+</div>
 
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
 
   
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h1><p>为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。</p>
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">剖析slf4j原理并实现自己的日志框架</h1>
+            
+            <div class="markdown-body">
+              <h1 id="场景需求"><a href="#场景需求" class="headerlink" title="场景需求"></a>场景需求</h1><p>为了解决不同系统日志存储在不同节点甚至docker容器内，不方便查看，缺乏统一规范，需要一套统一日志采集方案。ELK做为第一个想到的框架，其有成熟的解决方案的优势，但思考后觉本身还是要对系统的日志文件采集后写入ES，并未解决日志储存无统一规范的问题，且需要为每个节点的每一个系统日志配置logstash的解析。因此想通过JAVA成熟的日志框架，将统一日志采集直接植入日常开发中，减少额外工作。</p>
 <h1 id="Java日志框架"><a href="#Java日志框架" class="headerlink" title="Java日志框架"></a>Java日志框架</h1><h2 id="日志门面"><a href="#日志门面" class="headerlink" title="日志门面"></a>日志门面</h2><p><font color= red >SLF4J</font> 是java中的日志门面，即提供一套通用的接口，具体的实现可有开发者自有选择</p>
 <h2 id="门面模式"><a href="#门面模式" class="headerlink" title="门面模式"></a>门面模式</h2><h2 id="SLF4J-Simple-Logging-Facade-for-JAVA"><a href="#SLF4J-Simple-Logging-Facade-for-JAVA" class="headerlink" title="SLF4J(Simple Logging Facade for JAVA)"></a>SLF4J(Simple Logging Facade for JAVA)</h2><h3 id="slf4j源码分析"><a href="#slf4j源码分析" class="headerlink" title="slf4j源码分析"></a>slf4j源码分析</h3><ul>
 <li>通过工厂获取去logger实例  </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TODO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> lihao</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2020/11/19 14:43</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggerTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(LoggerTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;LoggerTest&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.slf4j.Logger;<br><span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span> TODO</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> lihao</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2020/11/19 14:43</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Version</span> 1.0.0</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoggerTest</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Logger logger = LoggerFactory.getLogger(LoggerTest.class);<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        logger.info(<span class="hljs-string">&quot;LoggerTest&quot;</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>getLogger()</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        ILoggerFactory iLoggerFactory = getILoggerFactory();</span><br><span class="line">        <span class="keyword">return</span> iLoggerFactory.getLogger(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Logger <span class="hljs-title">getLogger</span><span class="hljs-params">(String name)</span> </span>&#123;<br>        ILoggerFactory iLoggerFactory = getILoggerFactory();<br>        <span class="hljs-keyword">return</span> iLoggerFactory.getLogger(name);<br>    &#125;<br><br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>getILoggerFactory() , 判断实例是否存在，并通过单例模式生成</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ILoggerFactory <span class="title">getILoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LoggerFactory.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;</span><br><span class="line">                    performInitialization();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ILoggerFactory <span class="hljs-title">getILoggerFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;<br>            <span class="hljs-keyword">synchronized</span> (LoggerFactory.class) &#123;<br>                <span class="hljs-keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;<br>                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;<br>                    performInitialization();<br>                &#125;<br>            &#125;<br>        &#125;<br>        ...<br>    &#125;<br></code></pre></td></tr></table></figure>
 <ul>
 <li>performInitialization()-&gt;bind(),</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// skip check under android, see also</span></span><br><span class="line">            <span class="comment">// http://jira.qos.ch/browse/SLF4J-328</span></span><br><span class="line">            <span class="keyword">if</span> (!isAndroid()) &#123;</span><br><span class="line">                staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet();</span><br><span class="line">                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet);</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">* findPossibleStaticLoggerBinderPathSet()，通过classloader获取名为“org/slf4j/impl/StaticLoggerBinder.class”的类</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String STATIC_LOGGER_BINDER_PATH = <span class="string">&quot;org/slf4j/impl/StaticLoggerBinder.class&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> Set&lt;URL&gt; <span class="title">findPossibleStaticLoggerBinderPathSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// use Set instead of list in order to deal with bug #138</span></span><br><span class="line">        <span class="comment">// LinkedHashSet appropriate here because it preserves insertion order</span></span><br><span class="line">        <span class="comment">// during iteration</span></span><br><span class="line">        Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="keyword">new</span> LinkedHashSet&lt;URL&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ClassLoader loggerFactoryClassLoader = LoggerFactory.class.getClassLoader();</span><br><span class="line">            Enumeration&lt;URL&gt; paths;</span><br><span class="line">            <span class="keyword">if</span> (loggerFactoryClassLoader == <span class="keyword">null</span>) &#123;</span><br><span class="line">                paths = ClassLoader.getSystemResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (paths.hasMoreElements()) &#123;</span><br><span class="line">                URL path = paths.nextElement();</span><br><span class="line">                staticLoggerBinderPathSet.add(path);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">            Util.report(<span class="string">&quot;Error getting resources from path&quot;</span>, ioe);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> staticLoggerBinderPathSet;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bind</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="hljs-keyword">null</span>;<br>            <span class="hljs-comment">// skip check under android, see also</span><br>            <span class="hljs-comment">// http://jira.qos.ch/browse/SLF4J-328</span><br>            <span class="hljs-keyword">if</span> (!isAndroid()) &#123;<br>                staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet();<br>                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet);<br>            &#125;<br>            ...<br>        &#125; <br>    &#125;<br><br>```  <br><br>* findPossibleStaticLoggerBinderPathSet()，通过classloader获取名为“org/slf4j/impl/StaticLoggerBinder.class”的类<br><br>```java<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> String STATIC_LOGGER_BINDER_PATH = <span class="hljs-string">&quot;org/slf4j/impl/StaticLoggerBinder.class&quot;</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">static</span> Set&lt;URL&gt; <span class="hljs-title">findPossibleStaticLoggerBinderPathSet</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-comment">// use Set instead of list in order to deal with bug #138</span><br>        <span class="hljs-comment">// LinkedHashSet appropriate here because it preserves insertion order</span><br>        <span class="hljs-comment">// during iteration</span><br>        Set&lt;URL&gt; staticLoggerBinderPathSet = <span class="hljs-keyword">new</span> LinkedHashSet&lt;URL&gt;();<br>        <span class="hljs-keyword">try</span> &#123;<br>            ClassLoader loggerFactoryClassLoader = LoggerFactory.class.getClassLoader();<br>            Enumeration&lt;URL&gt; paths;<br>            <span class="hljs-keyword">if</span> (loggerFactoryClassLoader == <span class="hljs-keyword">null</span>) &#123;<br>                paths = ClassLoader.getSystemResources(STATIC_LOGGER_BINDER_PATH);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);<br>            &#125;<br>            <span class="hljs-keyword">while</span> (paths.hasMoreElements()) &#123;<br>                URL path = paths.nextElement();<br>                staticLoggerBinderPathSet.add(path);<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (IOException ioe) &#123;<br>            Util.report(<span class="hljs-string">&quot;Error getting resources from path&quot;</span>, ioe);<br>        &#125;<br>        <span class="hljs-keyword">return</span> staticLoggerBinderPathSet;<br>    &#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>找到项目中使用的日志jar,slf4j-log4j12的org/slf4j/impl/StaticLoggerBinder.class</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line">	....</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="自有日志框架"><a href="#自有日志框架" class="headerlink" title="自有日志框架"></a>自有日志框架</h1><h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="/images/WX20201124-161630.png">  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaticLoggerBinder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">LoggerFactoryBinder</span> </span>&#123;<br>	....<br> &#125;<br></code></pre></td></tr></table></figure>
+<h1 id="自有日志框架"><a href="#自有日志框架" class="headerlink" title="自有日志框架"></a>自有日志框架</h1><h2 id="框架架构"><a href="#框架架构" class="headerlink" title="框架架构"></a>框架架构</h2><p><img src="/images/WX20201124-161630.png" srcset="/img/loading.gif" lazyload>  </p>
 <ul>
 <li>测试类   </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestLogger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = LoggerFactory.getLogger(TestLogger.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;TestLogger&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestLogger</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Logger logger = LoggerFactory.getLogger(TestLogger.class);<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>&#123;<br>        logger.info(<span class="hljs-string">&quot;TestLogger&quot;</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 <h2 id="实现1，简单实现info的打印"><a href="#实现1，简单实现info的打印" class="headerlink" title="实现1，简单实现info的打印"></a>实现1，简单实现info的打印</h2><ul>
 <li>StaticLoggerBinder，单例构建YHSimpleLogFactory</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticLoggerBinder</span> <span class="keyword">implements</span> <span class="title">LoggerFactoryBinder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ILoggerFactory loggerFactory;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String loggerFactoryClassStr = LoggerFactoryBinder.class.getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticLoggerBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerFactory = <span class="keyword">new</span> YHSimpleLogFactory();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILoggerFactory <span class="title">getLoggerFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getLoggerFactoryClassStr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> loggerFactoryClassStr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder SINGLETON = <span class="keyword">new</span> StaticLoggerBinder();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单例</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the StaticLoggerBinder singleton</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> StaticLoggerBinder <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SINGLETON;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaticLoggerBinder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">LoggerFactoryBinder</span> </span>&#123;<br><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ILoggerFactory loggerFactory;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String loggerFactoryClassStr = LoggerFactoryBinder.class.getName();<br><br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">StaticLoggerBinder</span><span class="hljs-params">()</span> </span>&#123;<br>        loggerFactory = <span class="hljs-keyword">new</span> YHSimpleLogFactory();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> ILoggerFactory <span class="hljs-title">getLoggerFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> loggerFactory;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getLoggerFactoryClassStr</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> loggerFactoryClassStr;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 单例</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> StaticLoggerBinder SINGLETON = <span class="hljs-keyword">new</span> StaticLoggerBinder();<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 单例</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> the StaticLoggerBinder singleton</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> StaticLoggerBinder <span class="hljs-title">getSingleton</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> SINGLETON;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>YHSimpleLogFactory，使用ConcurrentMap，为每一个类只构建一个logger实例</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YHSimpleLogFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ILoggerFactory</span> </span>&#123;<br><br>    ConcurrentMap&lt;String, Logger&gt; loggerMap;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">YHSimpleLogFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        loggerMap = <span class="hljs-keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Logger <span class="hljs-title">getLogger</span><span class="hljs-params">(String name)</span> </span>&#123;<br>        Logger slf4jLogger = loggerMap.get(name);<br>        <span class="hljs-keyword">if</span> (slf4jLogger != <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> slf4jLogger;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            slf4jLogger = <span class="hljs-keyword">new</span> YHSimpleLogger(name);<br>            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);<br>            <span class="hljs-keyword">return</span> oldInstance == <span class="hljs-keyword">null</span> ? slf4jLogger : oldInstance;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>YHSimpleLogger</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleLogger</span> <span class="keyword">implements</span> <span class="title">Logger</span></span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">&quot;%s,%s&quot;</span>, <span class="keyword">this</span>.name, msg));</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/*省略待实现方法*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YHSimpleLogger</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Logger</span></span>&#123;<br>	 <span class="hljs-keyword">private</span> String name;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">YHSimpleLogger</span><span class="hljs-params">(String name)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">(String msg)</span> </span>&#123;<br>        System.out.println(String.format(<span class="hljs-string">&quot;%s,%s&quot;</span>, <span class="hljs-keyword">this</span>.name, msg));<br>    &#125;<br>	<span class="hljs-comment">/*省略待实现方法*/</span><br>&#125;<br></code></pre></td></tr></table></figure>
 <ul>
 <li>最终输出</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger.TestLogger,TestLogger</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">logger.TestLogger,TestLogger<br></code></pre></td></tr></table></figure>
 
 <h1 id="实现2，数据写入kafka"><a href="#实现2，数据写入kafka" class="headerlink" title="实现2，数据写入kafka"></a>实现2，数据写入kafka</h1><p>将实现1中的日志直接打印，改为写入kafka队列，可为每个类建立一个kafka producer</p>
 <ul>
 <li>YHSimpleKafkaLogFactory，此处要排除kafka中的log。因为是实验项目，所以使用了比较low的方法，直接对于kafka的日志，使用简单打印</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YHSimpleKafkaLogFactory</span> <span class="keyword">implements</span> <span class="title">ILoggerFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ConcurrentMap&lt;String, Logger&gt; loggerMap;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">YHSimpleKafkaLogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loggerMap = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Logger <span class="title">getLogger</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Logger slf4jLogger = loggerMap.get(name);</span><br><span class="line">        <span class="comment">//对kafka自身的log，使用YHSimpleLogger</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> slf4jLogger;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (name.startsWith(<span class="string">&quot;org.apache.kafka&quot;</span>)) &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleLogger(name);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                slf4jLogger = <span class="keyword">new</span> YHSimpleKafkaLogger(name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);</span><br><span class="line">            <span class="keyword">return</span> oldInstance == <span class="keyword">null</span> ? slf4jLogger : oldInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YHSimpleKafkaLogFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ILoggerFactory</span> </span>&#123;<br><br>    ConcurrentMap&lt;String, Logger&gt; loggerMap;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">YHSimpleKafkaLogFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        loggerMap = <span class="hljs-keyword">new</span> ConcurrentHashMap&lt;String, Logger&gt;();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Logger <span class="hljs-title">getLogger</span><span class="hljs-params">(String name)</span> </span>&#123;<br>        Logger slf4jLogger = loggerMap.get(name);<br>        <span class="hljs-comment">//对kafka自身的log，使用YHSimpleLogger</span><br><br><br>        <span class="hljs-keyword">if</span> (slf4jLogger != <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> slf4jLogger;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">if</span> (name.startsWith(<span class="hljs-string">&quot;org.apache.kafka&quot;</span>)) &#123;<br>                slf4jLogger = <span class="hljs-keyword">new</span> YHSimpleLogger(name);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                slf4jLogger = <span class="hljs-keyword">new</span> YHSimpleKafkaLogger(name);<br>            &#125;<br><br>            Logger oldInstance = loggerMap.putIfAbsent(name, slf4jLogger);<br>            <span class="hljs-keyword">return</span> oldInstance == <span class="hljs-keyword">null</span> ? slf4jLogger : oldInstance;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>YHSimpleKafkaLogger，构建时实例化kafka producer</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class YHSimpleKafkaLogger implements Logger &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private static final String TOPIC &#x3D; &quot;test&quot;;</span><br><span class="line">    private static final String BROKER_LIST &#x3D; &quot;192.168.3.123:9092&quot;;</span><br><span class="line">    private static KafkaProducer&lt;String, String&gt; producer &#x3D; null;</span><br><span class="line"></span><br><span class="line">    public YHSimpleKafkaLogger(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        Properties properties &#x3D; new Properties();</span><br><span class="line">        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());</span><br><span class="line">        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);</span><br><span class="line">        properties.put(ProducerConfig.ACKS_CONFIG, &quot;all&quot;);</span><br><span class="line">        properties.put(ProducerConfig.RETRIES_CONFIG, 0);</span><br><span class="line">        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);</span><br><span class="line">        properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);</span><br><span class="line">        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);</span><br><span class="line"></span><br><span class="line">        producer &#x3D; new KafkaProducer&lt;String, String&gt;(properties);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void info(String msg) &#123;</span><br><span class="line"></span><br><span class="line">        String str &#x3D; String.format(&quot;%s,%s&quot;, this.name, msg);</span><br><span class="line">        System.out.println(str);</span><br><span class="line">        producer.send(new ProducerRecord&lt;String, String&gt;(TOPIC, null, str));</span><br><span class="line">        producer.flush();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;*省略待实现方法*&#x2F;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YHSimpleKafkaLogger</span> <span class="hljs-title">implements</span> <span class="hljs-title">Logger</span> &#123;</span><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">String</span> name;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">String</span> TOPIC = <span class="hljs-string">&quot;test&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">String</span> BROKER_LIST = <span class="hljs-string">&quot;192.168.3.123:9092&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> KafkaProducer&lt;<span class="hljs-keyword">String</span>, <span class="hljs-keyword">String</span>&gt; producer = null;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">YHSimpleKafkaLogger</span><span class="hljs-params">(<span class="hljs-keyword">String</span> name)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>        Properties properties = <span class="hljs-keyword">new</span> Properties();<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.ACKS_CONFIG, <span class="hljs-string">&quot;all&quot;</span>);<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.RETRIES_CONFIG, <span class="hljs-number">0</span>);<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.BATCH_SIZE_CONFIG, <span class="hljs-number">16384</span>);<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.LINGER_MS_CONFIG, <span class="hljs-number">1</span>);<br>        properties.<span class="hljs-built_in">put</span>(ProducerConfig.BUFFER_MEMORY_CONFIG, <span class="hljs-number">33554432</span>);<br><br>        producer = <span class="hljs-keyword">new</span> KafkaProducer&lt;<span class="hljs-keyword">String</span>, <span class="hljs-keyword">String</span>&gt;(properties);<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">(<span class="hljs-keyword">String</span> msg)</span> </span>&#123;<br><br>        <span class="hljs-keyword">String</span> str = <span class="hljs-keyword">String</span>.format(<span class="hljs-string">&quot;%s,%s&quot;</span>, <span class="hljs-keyword">this</span>.name, msg);<br>        System.out.<span class="hljs-built_in">println</span>(str);<br>        producer.send(<span class="hljs-keyword">new</span> ProducerRecord&lt;<span class="hljs-keyword">String</span>, <span class="hljs-keyword">String</span>&gt;(TOPIC, null, str));<br>        producer.<span class="hljs-built_in">flush</span>();<br>    &#125;<br>    <br>    <span class="hljs-comment">/*省略待实现方法*/</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>监听kafka队列，输出<br><img src="/images/WX20201124-175549.png"></li>
+<li>监听kafka队列，输出<br><img src="/images/WX20201124-175549.png" srcset="/img/loading.gif" lazyload></li>
 </ul>
 <h2 id="实现3，基于kakfa的log4jappender将日志写入kafa队列"><a href="#实现3，基于kakfa的log4jappender将日志写入kafa队列" class="headerlink" title="实现3，基于kakfa的log4jappender将日志写入kafa队列"></a>实现3，基于kakfa的log4jappender将日志写入kafa队列</h2><p>引入maven依赖  </p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;kafka-log4j-appender&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.4.0&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">&lt;dependencies&gt;<br>    &lt;dependency&gt;<br>        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;<br>        &lt;artifactId&gt;kafka-log4j-appender&lt;/artifactId&gt;<br>        &lt;version&gt;2.4.0&lt;/version&gt;<br>    &lt;/dependency&gt;<br>&lt;/dependencies&gt;<br></code></pre></td></tr></table></figure>
 
 <p>编写日志配置文件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=warn,stdout,KAFKA</span><br><span class="line"></span><br><span class="line"># stdout配置</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH\:mm\:ss&#125; [%p]-[%c] %m%n</span><br><span class="line">#日志输出</span><br><span class="line">log4j.appender.logfile=org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File=logs/test.log</span><br><span class="line">log4j.appender.logfile.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n</span><br><span class="line"></span><br><span class="line"># kafka配置</span><br><span class="line">#定义一个名为kafka 为Appender</span><br><span class="line">log4j.appender.KAFKA=org.apache.kafka.log4jappender.KafkaLog4jAppender</span><br><span class="line">#指定日志写入到Kafka的主题</span><br><span class="line">log4j.appender.KAFKA.topic=test</span><br><span class="line">#制定连接kafka的地址</span><br><span class="line">log4j.appender.KAFKA.brokerList=<span class="number">192.168</span>.<span class="number">3.123</span>:<span class="number">9092</span></span><br><span class="line">#压缩方式，默认为none</span><br><span class="line">log4j.appender.KAFKA.compressionType=none</span><br><span class="line">#指定Producer发送消息的方式，默认是false，即异步发送</span><br><span class="line">log4j.appender.KAFKA.syncSend=<span class="keyword">true</span></span><br><span class="line">#指定日志级别</span><br><span class="line">log4j.appender.KAFKA.Threshold=info</span><br><span class="line">log4j.appender.KAFKA.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.KAFKA.ignoreExceptions=<span class="keyword">false</span></span><br><span class="line">##kafka与服务端阻塞时长，超时则通过Failover Appender输出</span><br><span class="line">log4j.appender.KAFKA.maxBlockMs=<span class="number">1000</span></span><br><span class="line">log4j.appender.KAFKA.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-<span class="number">5</span>p %c&#123;<span class="number">1</span>&#125;:%L %% - %m%n</span><br><span class="line"></span><br><span class="line">#Failover</span><br><span class="line">log4j.appender.Failover=Failover</span><br><span class="line">log4j.appender.primary=KAFKA</span><br><span class="line">log4j.appender.appenders=logfile</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java">log4j.rootLogger=warn,stdout,KAFKA<br><br># stdout配置<br>log4j.appender.stdout=org.apache.log4j.ConsoleAppender<br>log4j.appender.stdout.layout=org.apache.log4j.PatternLayout<br>log4j.appender.stdout.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH\:mm\:ss&#125; [%p]-[%c] %m%n<br>#日志输出<br>log4j.appender.logfile=org.apache.log4j.FileAppender<br>log4j.appender.logfile.File=logs/test.log<br>log4j.appender.logfile.layout=org.apache.log4j.PatternLayout<br>log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n<br><br># kafka配置<br>#定义一个名为kafka 为Appender<br>log4j.appender.KAFKA=org.apache.kafka.log4jappender.KafkaLog4jAppender<br>#指定日志写入到Kafka的主题<br>log4j.appender.KAFKA.topic=test<br>#制定连接kafka的地址<br>log4j.appender.KAFKA.brokerList=<span class="hljs-number">192.168</span>.<span class="hljs-number">3.123</span>:<span class="hljs-number">9092</span><br>#压缩方式，默认为none<br>log4j.appender.KAFKA.compressionType=none<br>#指定Producer发送消息的方式，默认是false，即异步发送<br>log4j.appender.KAFKA.syncSend=<span class="hljs-keyword">true</span><br>#指定日志级别<br>log4j.appender.KAFKA.Threshold=info<br>log4j.appender.KAFKA.layout=org.apache.log4j.PatternLayout<br>log4j.appender.KAFKA.ignoreExceptions=<span class="hljs-keyword">false</span><br>##kafka与服务端阻塞时长，超时则通过Failover Appender输出<br>log4j.appender.KAFKA.maxBlockMs=<span class="hljs-number">1000</span><br>log4j.appender.KAFKA.layout.ConversionPattern=%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-<span class="hljs-number">5</span>p %c&#123;<span class="hljs-number">1</span>&#125;:%L %% - %m%n<br><br>#Failover<br>log4j.appender.Failover=Failover<br>log4j.appender.primary=KAFKA<br>log4j.appender.appenders=logfile<br></code></pre></td></tr></table></figure>
 
 <font color= red >
     注意  
@@ -171,530 +305,200 @@
     4 减少与kafka服务端交互时间过长导致阻塞主业务，log4j.appender.KAFKA.maxBlockMs=1000
 </font> 
 
-<h3 id="kafkalog4jappender死锁"><a href="#kafkalog4jappender死锁" class="headerlink" title="kafkalog4jappender死锁"></a>kafkalog4jappender死锁</h3><p>启动日志测试程序后，出现程序卡死情况，通过<code>jstack 45978</code>追踪进程发现出现deadlock<br><img src="/images/WX20201125-195450.png">  </p>
+<h3 id="kafkalog4jappender死锁"><a href="#kafkalog4jappender死锁" class="headerlink" title="kafkalog4jappender死锁"></a>kafkalog4jappender死锁</h3><p>启动日志测试程序后，出现程序卡死情况，通过<code>jstack 45978</code>追踪进程发现出现deadlock<br><img src="/images/WX20201125-195450.png" srcset="/img/loading.gif" lazyload>  </p>
 <p>可以看出<br>kafka线程想要获取0x0000000797610830锁，同时持有0x00000007976105d8<br>main主线程想要获取0x00000007976105d8锁，同时持有0x00000007976105d8，0x0000000797610748，0x0000000797610830<br>出现死锁，&lt;0x0000000797610830&gt; (a org.apache.log4j.spi.RootLogger)  &lt;0x00000007976105d8&gt; (a org.apache.kafka.clients.producer.internals.ProducerMetadata)<br>有人已经提问过<a target="_blank" rel="noopener" href="https://github.com/apache/kafka/pull/4375">KafkaLog4jAppender deadlocks when logging from producer network thread</a><br><code>at org.apache.kafka.clients.Metadata.update(Metadata.java:261)</code> 显示由261行开始再次申请org.apache.log4j.spi.RootLogger导致死锁</p>
 <p>将org.apache.kafka.clients.Metadata的日志权限提高至WARN,致使其不会打印INFO<br><code>log4j.logger.org.apache.kafka.clients.Metadata=WARN</code></p>
- 
-      <!-- reward -->
-      
-      <div id="reword-out">
-        <div id="reward-btn">
-          Donate
-        </div>
-      </div>
-      
-    </div>
-    
 
-    <!-- copyright -->
-    
-    <div class="declare">
-      <ul class="post-copyright">
-        <li>
-          <i class="ri-copyright-line"></i>
-          <strong>Copyright： </strong>
-          
-          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
-          
-        </li>
-      </ul>
-    </div>
-    
-    <footer class="article-footer">
-       
-<div class="share-btn">
-      <span class="share-sns share-outer">
-        <i class="ri-share-forward-line"></i>
-        分享
-      </span>
-      <div class="share-wrap">
-        <i class="arrow"></i>
-        <div class="share-icons">
-          
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="ri-weibo-fill"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="ri-wechat-fill"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="ri-qq-fill"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="ri-douban-line"></i>
-          </a>
-          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a> -->
-          
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="ri-facebook-circle-fill"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="ri-twitter-fill"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="ri-google-fill"></i>
-          </a>
-        </div>
-      </div>
-</div>
-
-<div class="wx-share-modal">
-    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/11/19/%E5%89%96%E6%9E%90slf4j%E5%8E%9F%E7%90%86%E5%B9%B6%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div id="share-mask"></div>  
-    </footer>
-  </div>
-
-   
-  <nav class="article-nav">
-    
-      <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            追踪服务器自动重启问题
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Linux内存机制以及手动释放swap和内存</div>
-      </a>
-    
-  </nav>
-
-   
-<!-- valine评论 -->
-<div id="vcomments-box">
-  <div id="vcomments"></div>
-</div>
-<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
-<script>
-  new Valine({
-    el: "#vcomments",
-    app_id: "",
-    app_key: "",
-    path: window.location.pathname,
-    avatar: "monsterid",
-    placeholder: "给我的文章加点评论吧~",
-    recordIP: true,
-  });
-  const infoEle = document.querySelector("#vcomments .info");
-  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
-    infoEle.childNodes.forEach(function (item) {
-      item.parentNode.removeChild(item);
-    });
-  }
-</script>
-<style>
-  #vcomments-box {
-    padding: 5px 30px;
-  }
-
-  @media screen and (max-width: 800px) {
-    #vcomments-box {
-      padding: 5px 0px;
-    }
-  }
-
-  #vcomments-box #vcomments {
-    background-color: #fff;
-  }
-
-  .v .vlist .vcard .vh {
-    padding-right: 20px;
-  }
-
-  .v .vlist .vcard {
-    padding-left: 10px;
-  }
-</style>
-
- 
-   
-     
-</article>
-
-</section>
-      <footer class="footer">
-  <div class="outer">
-    <ul>
-      <li>
-        Copyrights &copy;
-        2015-2021
-        <i class="ri-heart-fill heart_icon"></i> Li Hao
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        
-        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
-        <span class="division">|</span>
-        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        <span>
-  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
-  <span class="division">|</span>
-  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
-</span>
-        
-      </li>
-    </ul>
-    <ul>
-      
-    </ul>
-    <ul>
-      
-    </ul>
-    <ul>
-      <li>
-        <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
-        
-      </li>
-    </ul>
-  </div>
-</footer>
-      <div class="float_btns">
-        <div class="totop" id="totop">
-  <i class="ri-arrow-up-line"></i>
-</div>
-
-<div class="todark" id="todark">
-  <i class="ri-moon-line"></i>
-</div>
-
-      </div>
-    </main>
-    <aside class="sidebar on">
-      <button class="navbar-toggle"></button>
-<nav class="navbar">
-  
-  <div class="logo">
-    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
-  </div>
-  
-  <ul class="nav nav-main">
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/">主页</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/archives">归档</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/categories">分类</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags">标签</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/friends">友链</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/2019/about">关于我</a>
-    </li>
-    
-  </ul>
-</nav>
-<nav class="navbar navbar-bottom">
-  <ul class="nav">
-    <li class="nav-item">
-      
-      <a class="nav-item-link nav-item-search"  title="Search">
-        <i class="ri-search-line"></i>
-      </a>
-      
-      
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
-        <i class="ri-rss-line"></i>
-      </a>
-      
-    </li>
-  </ul>
-</nav>
-<div class="search-form-wrap">
-  <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
-  <div id="local-search-result" class="local-search-result"></div>
-</div>
-</div>
-    </aside>
-    <div id="mask"></div>
-
-<!-- #reward -->
-<div id="reward">
-  <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
-  <div class="reward-box">
-    
-    <div class="reward-item">
-      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
-      <span class="reward-type">支付宝</span>
-    </div>
-    
-    
-    <div class="reward-item">
-      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
-      <span class="reward-type">微信</span>
-    </div>
-    
-  </div>
-</div>
-    
-<script src="/js/jquery-2.0.3.min.js"></script>
- 
-<script src="/js/lazyload.min.js"></script>
-
-<!-- Tocbot -->
- 
-<script src="/js/tocbot.min.js"></script>
-
-<script>
-  tocbot.init({
-    tocSelector: ".tocbot",
-    contentSelector: ".article-entry",
-    headingSelector: "h1, h2, h3, h4, h5, h6",
-    hasInnerContainers: true,
-    scrollSmooth: true,
-    scrollContainer: "main",
-    positionFixedSelector: ".tocbot",
-    positionFixedClass: "is-position-fixed",
-    fixedSidebarOffset: "auto",
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
-
-<script src="/dist/main.js"></script>
-
-<!-- ImageViewer -->
- <!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe. 
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides. 
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/07/%E8%BF%BD%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%8A%A8%E9%87%8D%E5%90%AF%E9%97%AE%E9%A2%98/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">追踪服务器自动重启问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/10/29/Linux%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6%E4%BB%A5%E5%8F%8A%E6%89%8B%E5%8A%A8%E9%87%8A%E6%94%BEswap%E5%92%8C%E5%86%85%E5%AD%98/">
+                        <span class="hidden-mobile">Linux内存机制以及手动释放swap和内存</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
                 </div>
+              
             </div>
 
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
+            
+          </article>
         </div>
-
+      </div>
     </div>
-
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+      </div>
+    
+  </div>
+</div>
 
-<script>
-    function viewer_init() {
-        let pswpElement = document.querySelectorAll('.pswp')[0];
-        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
-
-        $imgArr.forEach(($em, i) => {
-            $em.onclick = () => {
-                // slider展开状态
-                // todo: 这样不好，后面改成状态
-                if (document.querySelector('.left-col.show')) return
-                let items = []
-                $imgArr.forEach(($em2, i2) => {
-                    let img = $em2.getAttribute('data-idx', i2)
-                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
-                    let title = $em2.getAttribute('alt')
-                    // 获得原图尺寸
-                    const image = new Image()
-                    image.src = src
-                    items.push({
-                        src: src,
-                        w: image.width || $em2.width,
-                        h: image.height || $em2.height,
-                        title: title
-                    })
-                })
-                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
-                    index: parseInt(i)
-                });
-                gallery.init()
-            }
-        })
-    }
-    viewer_init()
-</script> 
-<!-- MathJax -->
-
-<!-- Katex -->
-
-<!-- busuanzi  -->
- 
-<script src="/js/busuanzi-2.3.pure.min.js"></script>
- 
-<!-- ClickLove -->
-
-<!-- ClickBoom1 -->
-
-<!-- ClickBoom2 -->
-
-<!-- CodeCopy -->
- 
-<link rel="stylesheet" href="/css/clipboard.css">
- <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-  function wait(callback, seconds) {
-    var timelag = null;
-    timelag = window.setTimeout(callback, seconds);
-  }
-  !function (e, t, a) {
-    var initCopyCode = function(){
-      var copyHtml = '';
-      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
-      copyHtml += '</button>';
-      $(".highlight .code pre").before(copyHtml);
-      $(".article pre code").before(copyHtml);
-      var clipboard = new ClipboardJS('.btn-copy', {
-        target: function(trigger) {
-          return trigger.nextElementSibling;
-        }
-      });
-      clipboard.on('success', function(e) {
-        let $btn = $(e.trigger);
-        $btn.addClass('copied');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-checkbox-circle-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPIED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-checkbox-circle-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-      clipboard.on('error', function(e) {
-        e.clearSelection();
-        let $btn = $(e.trigger);
-        $btn.addClass('copy-failed');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-time-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPY FAILED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-time-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-    }
-    initCopyCode();
-  }(window, document);
-</script>
- 
-<!-- CanvasBackground -->
-
-<script>
-  if (window.mermaid) {
-    mermaid.initialize({ theme: "forest" });
-  }
-</script>
+<!-- Custom -->
 
 
     
-  </div>
-</body>
 
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
 </html>

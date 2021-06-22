@@ -1,653 +1,457 @@
+
+
 <!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
-<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Li Hao">
+  <meta name="keywords" content="">
+  
+  <title>linux-command-line - Lee</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
   
 
-    <head>
-      <meta charset="utf-8" />
-        
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1"
-      />
-      <title>linux-command-line |  Hexo</title>
-  <meta name="generator" content="hexo-theme-ayer">
-      
-      <link rel="shortcut icon" href="/favicon.ico" />
-       
-<link rel="stylesheet" href="/dist/main.css">
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
-      />
-      
-<link rel="stylesheet" href="/css/custom.css">
- 
-      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-       
- 
 
-      <!-- mermaid -->
-      
-    </head>
-  </html>
-</html>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
 
 
 <body>
-  <div id="app">
-    
-      
-    <main class="content on">
-      <section class="outer">
-  <article
-  id="post-linux-command-line"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  linux-command-line
-</h1>
- 
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
 
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/08/28/linux-command-line/" class="article-date">
-  <time datetime="2020-08-28T00:06:07.000Z" itemprop="datePublished">2020-08-28</time>
-</a>   
-<div class="word_count">
-    <span class="post-time">
-        <span class="post-meta-item-icon">
-            <i class="ri-quill-pen-line"></i>
-            <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">824</span>
-        </span>
-    </span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
 
-    <span class="post-time">
-        &nbsp; | &nbsp;
-        <span class="post-meta-item-icon">
-            <i class="ri-book-open-line"></i>
-            <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">4 min</span>
-        </span>
-    </span>
-</div>
- 
-    </div>
-      
-    <div class="tocbot"></div>
-
-
-
-
-  
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="AWK"><a href="#AWK" class="headerlink" title="AWK"></a>AWK</h2><h3 id="奇偶行分离"><a href="#奇偶行分离" class="headerlink" title="奇偶行分离"></a>奇偶行分离</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat 途锐.csv |awk -F&#39;,&#39; &#39;&#123;if(NR%2&#x3D;&#x3D;1) &#123;print $1&quot;,&quot;$2&#125;&#125;&#39;&gt; 途锐_JH_&#96;date +%Y%m%d&#96;.csv   </span><br><span class="line">cat 途锐.csv |awk -F&#39;,&#39; &#39;&#123;if(NR%2&#x3D;&#x3D;0) &#123;print $1&#125;&#125;&#39;&gt; 途锐_WL_&#96;date +%Y%m%d&#96;.csv  </span><br></pre></td></tr></table></figure>
-<h3 id="按字段分离文件名"><a href="#按字段分离文件名" class="headerlink" title="按字段分离文件名"></a>按字段分离文件名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;|&#39; &#39;&#123;if(NR&#x3D;&#x3D;1)&#123;name&#x3D;$1&#125;if(name !&#x3D; $1)&#123;name&#x3D;$1&#125; print $2&quot;,&quot;$3 &gt;name&quot;.csv&quot; &#125;&#39; temp.res.csv</span><br></pre></td></tr></table></figure>
-<h3 id="awk-求和，第一列相同时累加第二列的值"><a href="#awk-求和，第一列相同时累加第二列的值" class="headerlink" title="awk 求和，第一列相同时累加第二列的值"></a>awk 求和，第一列相同时累加第二列的值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&quot;,&quot; &#39;&#123;sum[$1]+&#x3D;$2&#125;END&#123;for(c in sum)&#123;print c&quot;|&quot;sum[c]&#125;&#125;&#39;</span><br></pre></td></tr></table></figure>
-<h3 id="文件差集"><a href="#文件差集" class="headerlink" title="文件差集"></a>文件差集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;NR&#x3D;&#x3D;FNR&#123; a[$1]&#x3D;$1 &#125; NR&gt;FNR&#123; if(a[$1] &#x3D;&#x3D; &quot;&quot;)&#123; print $1&#125;&#125;&#39; Tiguan_20180528_20180604 Tiguan_20180521_20180527.csv</span><br></pre></td></tr></table></figure>
-<h3 id="文件交集"><a href="#文件交集" class="headerlink" title="文件交集"></a>文件交集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;\t&#39; &#39;NR&#x3D;&#x3D;FNR&#123; arr[$1]&#x3D;&quot;x&quot; &#125; NR&gt;FNR&#123; if(arr[$1]!&#x3D;&quot;&quot;)&#123; print $1&quot;,&quot;$2 &#125; &#125;&#39; a.txt b.txt</span><br></pre></td></tr></table></figure>
-<h3 id="去重行"><a href="#去重行" class="headerlink" title="去重行"></a>去重行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;!a[$0]++&#39; file</span><br></pre></td></tr></table></figure>
-<h3 id="去重，字段转小写"><a href="#去重，字段转小写" class="headerlink" title="去重，字段转小写"></a>去重，字段转小写</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat 20180628_ajia.csv | awk &#39;!a[$0]++&#39; | awk &#39;&#123;print $1&quot;,&quot;tolower($2)&#125;&#39; &gt; 20180628_ajia_uniq.csv    </span><br></pre></td></tr></table></figure>
-
-<h3 id="打印倒数"><a href="#打印倒数" class="headerlink" title="打印倒数"></a>打印倒数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat final_result20180630.csv |head -n 100|awk -F&quot;,&quot; &#39;&#123;print $1&quot;,&quot;$2&quot;,&quot;$3&quot;,&quot;$(NF-3)&quot;,&quot;$(NF-2)&quot;,&quot;$(NF-1)&#125;&#39;&gt; 20180630.csv</span><br></pre></td></tr></table></figure>
-
-<h3 id="按列统计行数"><a href="#按列统计行数" class="headerlink" title="按列统计行数"></a>按列统计行数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a*_out_20181010.csv|awk -F&#39;,&#39; &#39;&#123;print $3&#125;&#39;|sort|uniq -c|awk &#39;&#123;print $2&quot; &quot;$3&#125;&#39;|less</span><br></pre></td></tr></table></figure>
-
-<h3 id="取最后一列"><a href="#取最后一列" class="headerlink" title="取最后一列"></a>取最后一列</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#39;,&#39; &#39;&#123;print $NF&#125;&#39; </span><br></pre></td></tr></table></figure>
-<h3 id="两个文件相同列"><a href="#两个文件相同列" class="headerlink" title="两个文件相同列"></a>两个文件相同列</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#39;NR&#x3D;&#x3D;FNR&#123;a[$1]++&#125;NR!&#x3D;FNR&#123;if($1 in a)&#123;print&#125;&#125;&#39; 1114.csv 1128.csv</span><br></pre></td></tr></table></figure>
-
-<h2 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h2><h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &#39;s&#x2F;原字符串&#x2F;替换字符串&#x2F;&#39;</span><br></pre></td></tr></table></figure>
-<h3 id="判断字符串长度"><a href="#判断字符串长度" class="headerlink" title="判断字符串长度"></a>判断字符串长度</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;#str&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="字符串截取"><a href="#字符串截取" class="headerlink" title="字符串截取"></a>字符串截取</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;beginDate:2&#125; &#x2F;&#x2F;去掉前两位</span><br></pre></td></tr></table></figure>
-<h3 id="替换指定位置字符"><a href="#替换指定位置字符" class="headerlink" title="替换指定位置字符"></a>替换指定位置字符</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#39;BEGIN&#123;FS&#x3D;OFS&#x3D;&quot;,&quot;&#125;&#123;sub(&#x2F;,&#x2F;,&quot;;&quot;,$32)&#125;1&#39; file</span><br></pre></td></tr></table></figure>
-
-<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><h3 id="目录不存在则创建目录"><a href="#目录不存在则创建目录" class="headerlink" title="目录不存在则创建目录"></a>目录不存在则创建目录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh user@192.168.3.131 &quot;[ -d &#x2F;var&#x2F;test ] &amp;&amp; echo ok || mkdir -p &#x2F;var&#x2F;test&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="文件目录操作"><a href="#文件目录操作" class="headerlink" title="文件目录操作"></a>文件目录操作</h2><h3 id="切分文件"><a href="#切分文件" class="headerlink" title="切分文件"></a>切分文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">split  -b 20m -d -a 3   齐家_500W.csv 齐家  </span><br></pre></td></tr></table></figure>
-<h3 id="看各文件夹大小"><a href="#看各文件夹大小" class="headerlink" title="看各文件夹大小"></a>看各文件夹大小</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">du -h --max-depth&#x3D;1</span><br></pre></td></tr></table></figure>
-<h3 id="获取文件夹下的文件名"><a href="#获取文件夹下的文件名" class="headerlink" title="获取文件夹下的文件名"></a>获取文件夹下的文件名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">path&#x3D;$1</span><br><span class="line">files&#x3D;$(ls $path)</span><br><span class="line">for filename in $files</span><br><span class="line">do</span><br><span class="line">   echo $filename &gt;&gt; filename.txt</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h2 id="磁盘操作"><a href="#磁盘操作" class="headerlink" title="磁盘操作"></a>磁盘操作</h2><h3 id="查看磁盘UUID"><a href="#查看磁盘UUID" class="headerlink" title="查看磁盘UUID"></a>查看磁盘UUID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -l &#x2F;dev&#x2F;disk&#x2F;by-uuid&#x2F;</span><br></pre></td></tr></table></figure>
-
-<h2 id="压缩命令"><a href="#压缩命令" class="headerlink" title="压缩命令"></a>压缩命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">.gz</span><br><span class="line">　　解压1：gunzip FileName.gz</span><br><span class="line">　　解压2：gzip -d FileName.gz</span><br><span class="line">　　压缩：gzip FileName</span><br><span class="line">.tar.gz 和 .tgz</span><br><span class="line">　　解压：tar zxvf FileName.tar.gz</span><br><span class="line">　　压缩：tar zcvf FileName.tar.gz DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.bz2</span><br><span class="line">　　解压1：bzip2 -d FileName.bz2</span><br><span class="line">　　解压2：bunzip2 FileName.bz2</span><br><span class="line">　　压缩： bzip2 -z FileName</span><br><span class="line">.tar.bz2</span><br><span class="line">　　解压：tar jxvf FileName.tar.bz2 或tar –bzip xvf FileName.tar.bz2</span><br><span class="line">　　压缩：tar jcvf FileName.tar.bz2 DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.bz</span><br><span class="line">　　解压1：bzip2 -d FileName.bz</span><br><span class="line">　　解压2：bunzip2 FileName.bz</span><br><span class="line">　　压缩：未知</span><br><span class="line">.tar.bz</span><br><span class="line">　　解压：tar jxvf FileName.tar.bz</span><br><span class="line">　　压缩：未知</span><br><span class="line">　　———————————————</span><br><span class="line">.Z</span><br><span class="line">　　解压：uncompress FileName.Z</span><br><span class="line">　　压缩：compress FileName</span><br><span class="line">.tar.Z</span><br><span class="line">　　解压：tar Zxvf FileName.tar.Z</span><br><span class="line">　　压缩：tar Zcvf FileName.tar.Z DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.zip</span><br><span class="line">　　解压：unzip FileName.zip</span><br><span class="line">　　压缩：zip FileName.zip DirName</span><br><span class="line">　　压缩一个目录使用 -r 参数，-r 递归。例： $ zip -r FileName.zip DirName</span><br><span class="line">　　———————————————</span><br><span class="line">.rar</span><br><span class="line">　　解压：rar x FileName.rar</span><br><span class="line">　　压缩：rar a FileName.rar DirName</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><h3 id="ps-amp-top"><a href="#ps-amp-top" class="headerlink" title="ps&amp;top"></a>ps&amp;top</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y procps</span><br></pre></td></tr></table></figure>
-<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install net-tools</span><br></pre></td></tr></table></figure>
-
- 
-      <!-- reward -->
-      
-      <div id="reword-out">
-        <div id="reward-btn">
-          Donate
-        </div>
-      </div>
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <div class="declare">
-      <ul class="post-copyright">
-        <li>
-          <i class="ri-copyright-line"></i>
-          <strong>Copyright： </strong>
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
           
-          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
           
-        </li>
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="linux-command-line">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-08-28 08:06" pubdate>
+        2020年8月28日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
     
-    <footer class="article-footer">
-       
-<div class="share-btn">
-      <span class="share-sns share-outer">
-        <i class="ri-share-forward-line"></i>
-        分享
-      </span>
-      <div class="share-wrap">
-        <i class="arrow"></i>
-        <div class="share-icons">
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      778 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
           
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="ri-weibo-fill"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="ri-wechat-fill"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="ri-qq-fill"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="ri-douban-line"></i>
-          </a>
-          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a> -->
-          
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="ri-facebook-circle-fill"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="ri-twitter-fill"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="ri-google-fill"></i>
-          </a>
         </div>
       </div>
-</div>
-
-<div class="wx-share-modal">
-    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/08/28/linux-command-line/" alt="微信分享二维码">
     </div>
-</div>
+  </header>
 
-<div id="share-mask"></div>  
-    </footer>
-  </div>
-
-   
-  <nav class="article-nav">
+  <main>
     
-      <a href="/2020/08/28/linux-config/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            linux-config
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2020/08/27/mysql-command-line/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">mysql-command-line</div>
-      </a>
-    
-  </nav>
-
-   
-<!-- valine评论 -->
-<div id="vcomments-box">
-  <div id="vcomments"></div>
-</div>
-<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
-<script>
-  new Valine({
-    el: "#vcomments",
-    app_id: "",
-    app_key: "",
-    path: window.location.pathname,
-    avatar: "monsterid",
-    placeholder: "给我的文章加点评论吧~",
-    recordIP: true,
-  });
-  const infoEle = document.querySelector("#vcomments .info");
-  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
-    infoEle.childNodes.forEach(function (item) {
-      item.parentNode.removeChild(item);
-    });
-  }
-</script>
-<style>
-  #vcomments-box {
-    padding: 5px 30px;
-  }
-
-  @media screen and (max-width: 800px) {
-    #vcomments-box {
-      padding: 5px 0px;
-    }
-  }
-
-  #vcomments-box #vcomments {
-    background-color: #fff;
-  }
-
-  .v .vlist .vcard .vh {
-    padding-right: 20px;
-  }
-
-  .v .vlist .vcard {
-    padding-left: 10px;
-  }
-</style>
-
- 
-   
-     
-</article>
-
-</section>
-      <footer class="footer">
-  <div class="outer">
-    <ul>
-      <li>
-        Copyrights &copy;
-        2015-2021
-        <i class="ri-heart-fill heart_icon"></i> Li Hao
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        
-        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
-        <span class="division">|</span>
-        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        <span>
-  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
-  <span class="division">|</span>
-  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
-</span>
-        
-      </li>
-    </ul>
-    <ul>
       
-    </ul>
-    <ul>
-      
-    </ul>
-    <ul>
-      <li>
-        <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
-        
-      </li>
-    </ul>
-  </div>
-</footer>
-      <div class="float_btns">
-        <div class="totop" id="totop">
-  <i class="ri-arrow-up-line"></i>
-</div>
 
-<div class="todark" id="todark">
-  <i class="ri-moon-line"></i>
-</div>
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">linux-command-line</h1>
+            
+            <div class="markdown-body">
+              <h2 id="AWK"><a href="#AWK" class="headerlink" title="AWK"></a>AWK</h2><h3 id="奇偶行分离"><a href="#奇偶行分离" class="headerlink" title="奇偶行分离"></a>奇偶行分离</h3><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gcode">cat 途锐.csv |awk -F<span class="hljs-string">&#x27;,&#x27;</span> <span class="hljs-string">&#x27;&#123;if(NR%2==1) &#123;print $1&quot;,&quot;$2&#125;&#125;&#x27;</span>&gt; 途锐_JH_`date +<span class="hljs-meta">%</span>Y<span class="hljs-meta">%</span>m<span class="hljs-meta">%</span>d`.csv   <br>cat 途锐.csv |awk -F<span class="hljs-string">&#x27;,&#x27;</span> <span class="hljs-string">&#x27;&#123;if(NR%2==0) &#123;print $1&#125;&#125;&#x27;</span>&gt; 途锐_WL_`date +<span class="hljs-meta">%</span>Y<span class="hljs-meta">%</span>m<span class="hljs-meta">%</span>d`.csv  <br></code></pre></td></tr></table></figure>
+<h3 id="按字段分离文件名"><a href="#按字段分离文件名" class="headerlink" title="按字段分离文件名"></a>按字段分离文件名</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">awk</span> -F&#x27;|&#x27; &#x27;&#123;if(NR==<span class="hljs-number">1</span>)&#123;name=$<span class="hljs-number">1</span>&#125;if(name != $<span class="hljs-number">1</span>)&#123;name=$<span class="hljs-number">1</span>&#125; print $<span class="hljs-number">2</span><span class="hljs-string">&quot;,&quot;</span>$<span class="hljs-number">3</span> &gt;name<span class="hljs-string">&quot;.csv&quot;</span> &#125;&#x27; temp.res.csv<br></code></pre></td></tr></table></figure>
+<h3 id="awk-求和，第一列相同时累加第二列的值"><a href="#awk-求和，第一列相同时累加第二列的值" class="headerlink" title="awk 求和，第一列相同时累加第二列的值"></a>awk 求和，第一列相同时累加第二列的值</h3><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata">awk -F<span class="hljs-string">&quot;,&quot;</span> &#x27;&#123;<span class="hljs-keyword">sum</span>[<span class="hljs-variable">$1</span>]+=<span class="hljs-variable">$2&#125;</span>END&#123;<span class="hljs-keyword">for</span>(c <span class="hljs-keyword">in</span> <span class="hljs-keyword">sum</span>)&#123;<span class="hljs-keyword">print</span> c<span class="hljs-string">&quot;|&quot;</span><span class="hljs-keyword">sum</span>[c]&#125;&#125;&#x27;<br></code></pre></td></tr></table></figure>
+<h3 id="文件差集"><a href="#文件差集" class="headerlink" title="文件差集"></a>文件差集</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">awk</span> -F&#x27;,&#x27; &#x27;NR==FNR&#123; a[$<span class="hljs-number">1</span>]=$<span class="hljs-number">1</span> &#125; NR&gt;FNR&#123; if(a[$<span class="hljs-number">1</span>] == <span class="hljs-string">&quot;&quot;</span>)&#123; print $<span class="hljs-number">1</span>&#125;&#125;&#x27; Tiguan_<span class="hljs-number">20180528</span>_<span class="hljs-number">20180604</span> Tiguan_<span class="hljs-number">20180521</span>_<span class="hljs-number">20180527</span>.csv<br></code></pre></td></tr></table></figure>
+<h3 id="文件交集"><a href="#文件交集" class="headerlink" title="文件交集"></a>文件交集</h3><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata">awk -F&#x27;\t&#x27; &#x27;NR==FNR&#123; arr[<span class="hljs-variable">$1</span>]=<span class="hljs-string">&quot;x&quot;</span> &#125; NR&gt;FNR&#123; <span class="hljs-keyword">if</span>(arr[<span class="hljs-variable">$1</span>]!=<span class="hljs-string">&quot;&quot;</span>)&#123; <span class="hljs-keyword">print</span> <span class="hljs-variable">$1</span><span class="hljs-string">&quot;,&quot;</span><span class="hljs-variable">$2</span> &#125; &#125;&#x27; a.txt b.txt<br></code></pre></td></tr></table></figure>
+<h3 id="去重行"><a href="#去重行" class="headerlink" title="去重行"></a>去重行</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">awk</span> -F<span class="hljs-string">&#x27;,&#x27;</span> <span class="hljs-string">&#x27;!a[<span class="hljs-variable">$0</span>]++&#x27;</span> file<br></code></pre></td></tr></table></figure>
+<h3 id="去重，字段转小写"><a href="#去重，字段转小写" class="headerlink" title="去重，字段转小写"></a>去重，字段转小写</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> <span class="hljs-number">20180628</span>_ajia.csv | awk &#x27;!a[$<span class="hljs-number">0</span>]++&#x27; | awk &#x27;&#123;print $<span class="hljs-number">1</span><span class="hljs-string">&quot;,&quot;</span>tolower($<span class="hljs-number">2</span>)&#125;&#x27; &gt; <span class="hljs-number">20180628</span>_ajia_uniq.csv    <br></code></pre></td></tr></table></figure>
 
-      </div>
-    </main>
-    <aside class="sidebar on">
-      <button class="navbar-toggle"></button>
-<nav class="navbar">
-  
-  <div class="logo">
-    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
-  </div>
-  
-  <ul class="nav nav-main">
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/">主页</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/archives">归档</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/categories">分类</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags">标签</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/friends">友链</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/2019/about">关于我</a>
-    </li>
-    
-  </ul>
-</nav>
-<nav class="navbar navbar-bottom">
-  <ul class="nav">
-    <li class="nav-item">
-      
-      <a class="nav-item-link nav-item-search"  title="Search">
-        <i class="ri-search-line"></i>
-      </a>
-      
-      
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
-        <i class="ri-rss-line"></i>
-      </a>
-      
-    </li>
-  </ul>
-</nav>
-<div class="search-form-wrap">
-  <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
-  <div id="local-search-result" class="local-search-result"></div>
-</div>
-</div>
-    </aside>
-    <div id="mask"></div>
+<h3 id="打印倒数"><a href="#打印倒数" class="headerlink" title="打印倒数"></a>打印倒数</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> final_result<span class="hljs-number">20180630</span>.csv |head -n <span class="hljs-number">100</span>|awk -F<span class="hljs-string">&quot;,&quot;</span> &#x27;&#123;print $<span class="hljs-number">1</span><span class="hljs-string">&quot;,&quot;</span>$<span class="hljs-number">2</span><span class="hljs-string">&quot;,&quot;</span>$<span class="hljs-number">3</span><span class="hljs-string">&quot;,&quot;</span>$(NF-<span class="hljs-number">3</span>)<span class="hljs-string">&quot;,&quot;</span>$(NF-<span class="hljs-number">2</span>)<span class="hljs-string">&quot;,&quot;</span>$(NF-<span class="hljs-number">1</span>)&#125;&#x27;&gt; <span class="hljs-number">20180630</span>.csv<br></code></pre></td></tr></table></figure>
 
-<!-- #reward -->
-<div id="reward">
-  <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
-  <div class="reward-box">
-    
-    <div class="reward-item">
-      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
-      <span class="reward-type">支付宝</span>
-    </div>
-    
-    
-    <div class="reward-item">
-      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
-      <span class="reward-type">微信</span>
-    </div>
-    
-  </div>
-</div>
-    
-<script src="/js/jquery-2.0.3.min.js"></script>
- 
-<script src="/js/lazyload.min.js"></script>
+<h3 id="按列统计行数"><a href="#按列统计行数" class="headerlink" title="按列统计行数"></a>按列统计行数</h3><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">cat</span> a*_out_20181010.csv|awk -F&#x27;,&#x27; &#x27;&#123;<span class="hljs-keyword">print</span> <span class="hljs-variable">$3&#125;</span>&#x27;|<span class="hljs-keyword">sort</span>|uniq -c|awk &#x27;&#123;<span class="hljs-keyword">print</span> <span class="hljs-variable">$2</span><span class="hljs-string">&quot; &quot;</span><span class="hljs-variable">$3&#125;</span>&#x27;|less<br></code></pre></td></tr></table></figure>
 
-<!-- Tocbot -->
- 
-<script src="/js/tocbot.min.js"></script>
+<h3 id="取最后一列"><a href="#取最后一列" class="headerlink" title="取最后一列"></a>取最后一列</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">awk</span> -F<span class="hljs-string">&#x27;,&#x27;</span> <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$NF</span>&#125;&#x27;</span> <br></code></pre></td></tr></table></figure>
+<h3 id="两个文件相同列"><a href="#两个文件相同列" class="headerlink" title="两个文件相同列"></a>两个文件相同列</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">awk</span> &#x27;NR==FNR&#123;a[$<span class="hljs-number">1</span>]++&#125;NR!=FNR&#123;if($<span class="hljs-number">1</span> in a)&#123;print&#125;&#125;&#x27; <span class="hljs-number">1114</span>.csv <span class="hljs-number">1128</span>.csv<br></code></pre></td></tr></table></figure>
 
-<script>
-  tocbot.init({
-    tocSelector: ".tocbot",
-    contentSelector: ".article-entry",
-    headingSelector: "h1, h2, h3, h4, h5, h6",
-    hasInnerContainers: true,
-    scrollSmooth: true,
-    scrollContainer: "main",
-    positionFixedSelector: ".tocbot",
-    positionFixedClass: "is-position-fixed",
-    fixedSidebarOffset: "auto",
-  });
-</script>
+<h2 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h2><h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">sed</span> <span class="hljs-string">&#x27;s/原字符串/替换字符串/&#x27;</span><br></code></pre></td></tr></table></figure>
+<h3 id="判断字符串长度"><a href="#判断字符串长度" class="headerlink" title="判断字符串长度"></a>判断字符串长度</h3><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dust"><span class="xml">$</span><span class="hljs-template-tag">&#123;#<span class="hljs-name">str</span>&#125;</span><br></code></pre></td></tr></table></figure>
+<h3 id="字符串截取"><a href="#字符串截取" class="headerlink" title="字符串截取"></a>字符串截取</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-variable">$&#123;beginDate:2&#125;</span> <span class="hljs-regexp">//</span>去掉前两位<br></code></pre></td></tr></table></figure>
+<h3 id="替换指定位置字符"><a href="#替换指定位置字符" class="headerlink" title="替换指定位置字符"></a>替换指定位置字符</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">awk</span> &#x27;BEGIN&#123;FS=OFS=<span class="hljs-string">&quot;,&quot;</span>&#125;&#123;sub(/,/,<span class="hljs-string">&quot;;&quot;</span>,$<span class="hljs-number">32</span>)&#125;<span class="hljs-number">1</span>&#x27; file<br></code></pre></td></tr></table></figure>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><h3 id="目录不存在则创建目录"><a href="#目录不存在则创建目录" class="headerlink" title="目录不存在则创建目录"></a>目录不存在则创建目录</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">ssh <span class="hljs-symbol">user@</span><span class="hljs-number">192.168</span><span class="hljs-number">.3</span><span class="hljs-number">.131</span> <span class="hljs-string">&quot;[ -d /var/test ] &amp;&amp; echo ok || mkdir -p /var/test&quot;</span><br></code></pre></td></tr></table></figure>
 
-<script src="/dist/main.js"></script>
+<h2 id="文件目录操作"><a href="#文件目录操作" class="headerlink" title="文件目录操作"></a>文件目录操作</h2><h3 id="切分文件"><a href="#切分文件" class="headerlink" title="切分文件"></a>切分文件</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">split</span>  -b <span class="hljs-number">20</span>m -d -a <span class="hljs-number">3</span>   齐家_<span class="hljs-number">500</span>W.csv 齐家  <br></code></pre></td></tr></table></figure>
+<h3 id="看各文件夹大小"><a href="#看各文件夹大小" class="headerlink" title="看各文件夹大小"></a>看各文件夹大小</h3><figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gml">du -h --<span class="hljs-built_in">max</span>-<span class="hljs-symbol">depth</span>=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<h3 id="获取文件夹下的文件名"><a href="#获取文件夹下的文件名" class="headerlink" title="获取文件夹下的文件名"></a>获取文件夹下的文件名</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">path</span>=<span class="hljs-variable">$1</span><br><span class="hljs-attribute">files</span>=$(ls <span class="hljs-variable">$path</span>)<br><span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> <span class="hljs-variable">$files</span><br><span class="hljs-keyword">do</span><br>   echo <span class="hljs-variable">$filename</span> &gt;&gt; filename.txt<br>done<br></code></pre></td></tr></table></figure>
 
-<!-- ImageViewer -->
- <!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+<h2 id="磁盘操作"><a href="#磁盘操作" class="headerlink" title="磁盘操作"></a>磁盘操作</h2><h3 id="查看磁盘UUID"><a href="#查看磁盘UUID" class="headerlink" title="查看磁盘UUID"></a>查看磁盘UUID</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">ls -l <span class="hljs-regexp">/dev/</span>disk<span class="hljs-regexp">/by-uuid/</span><br></code></pre></td></tr></table></figure>
 
-    <!-- Background of PhotoSwipe. 
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
+<h2 id="压缩命令"><a href="#压缩命令" class="headerlink" title="压缩命令"></a>压缩命令</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs stylus">.gz<br>　　解压<span class="hljs-number">1</span>：gunzip FileName.gz<br>　　解压<span class="hljs-number">2</span>：gzip -d FileName.gz<br>　　压缩：gzip FileName<br><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> 和 .tgz<br>　　解压：tar zxvf FileName<span class="hljs-selector-class">.tar</span>.gz<br>　　压缩：tar zcvf FileName<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> DirName<br>　　———————————————<br>.bz2<br>　　解压<span class="hljs-number">1</span>：bzip2 -d FileName.bz2<br>　　解压<span class="hljs-number">2</span>：bunzip2 FileName.bz2<br>　　压缩： bzip2 -z FileName<br><span class="hljs-selector-class">.tar</span>.bz2<br>　　解压：tar jxvf FileName<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.bz2</span> 或tar –bzip xvf FileName<span class="hljs-selector-class">.tar</span>.bz2<br>　　压缩：tar jcvf FileName<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.bz2</span> DirName<br>　　———————————————<br>.bz<br>　　解压<span class="hljs-number">1</span>：bzip2 -d FileName.bz<br>　　解压<span class="hljs-number">2</span>：bunzip2 FileName.bz<br>　　压缩：未知<br><span class="hljs-selector-class">.tar</span>.bz<br>　　解压：tar jxvf FileName<span class="hljs-selector-class">.tar</span>.bz<br>　　压缩：未知<br>　　———————————————<br>.Z<br>　　解压：uncompress FileName.Z<br>　　压缩：compress FileName<br><span class="hljs-selector-class">.tar</span>.Z<br>　　解压：tar Zxvf FileName<span class="hljs-selector-class">.tar</span>.Z<br>　　压缩：tar Zcvf FileName<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.Z</span> DirName<br>　　———————————————<br>.zip<br>　　解压：unzip FileName.zip<br>　　压缩：zip FileName<span class="hljs-selector-class">.zip</span> DirName<br>　　压缩一个目录使用 -r 参数，-r 递归。例： $ zip -r FileName<span class="hljs-selector-class">.zip</span> DirName<br>　　———————————————<br>.rar<br>　　解压：rar x FileName.rar<br>　　压缩：rar <span class="hljs-selector-tag">a</span> FileName<span class="hljs-selector-class">.rar</span> DirName<br></code></pre></td></tr></table></figure>
 
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
+<h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><h3 id="ps-amp-top"><a href="#ps-amp-top" class="headerlink" title="ps&amp;top"></a>ps&amp;top</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">apt-<span class="hljs-builtin-name">get</span> update &amp;&amp; apt-<span class="hljs-builtin-name">get</span> install -y procps<br></code></pre></td></tr></table></figure>
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">apt-<span class="hljs-builtin-name">get</span> update &amp;&amp; apt-<span class="hljs-builtin-name">get</span> install net-tools<br></code></pre></td></tr></table></figure>
 
-        <!-- Container that holds slides. 
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
 
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/08/28/linux-config/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux-config</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/08/27/mysql-command-line/">
+                        <span class="hidden-mobile">mysql-command-line</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
                 </div>
+              
             </div>
 
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
+            
+          </article>
         </div>
-
+      </div>
     </div>
-
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+      </div>
+    
+  </div>
+</div>
 
-<script>
-    function viewer_init() {
-        let pswpElement = document.querySelectorAll('.pswp')[0];
-        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
-
-        $imgArr.forEach(($em, i) => {
-            $em.onclick = () => {
-                // slider展开状态
-                // todo: 这样不好，后面改成状态
-                if (document.querySelector('.left-col.show')) return
-                let items = []
-                $imgArr.forEach(($em2, i2) => {
-                    let img = $em2.getAttribute('data-idx', i2)
-                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
-                    let title = $em2.getAttribute('alt')
-                    // 获得原图尺寸
-                    const image = new Image()
-                    image.src = src
-                    items.push({
-                        src: src,
-                        w: image.width || $em2.width,
-                        h: image.height || $em2.height,
-                        title: title
-                    })
-                })
-                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
-                    index: parseInt(i)
-                });
-                gallery.init()
-            }
-        })
-    }
-    viewer_init()
-</script> 
-<!-- MathJax -->
-
-<!-- Katex -->
-
-<!-- busuanzi  -->
- 
-<script src="/js/busuanzi-2.3.pure.min.js"></script>
- 
-<!-- ClickLove -->
-
-<!-- ClickBoom1 -->
-
-<!-- ClickBoom2 -->
-
-<!-- CodeCopy -->
- 
-<link rel="stylesheet" href="/css/clipboard.css">
- <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-  function wait(callback, seconds) {
-    var timelag = null;
-    timelag = window.setTimeout(callback, seconds);
-  }
-  !function (e, t, a) {
-    var initCopyCode = function(){
-      var copyHtml = '';
-      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
-      copyHtml += '</button>';
-      $(".highlight .code pre").before(copyHtml);
-      $(".article pre code").before(copyHtml);
-      var clipboard = new ClipboardJS('.btn-copy', {
-        target: function(trigger) {
-          return trigger.nextElementSibling;
-        }
-      });
-      clipboard.on('success', function(e) {
-        let $btn = $(e.trigger);
-        $btn.addClass('copied');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-checkbox-circle-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPIED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-checkbox-circle-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-      clipboard.on('error', function(e) {
-        e.clearSelection();
-        let $btn = $(e.trigger);
-        $btn.addClass('copy-failed');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-time-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPY FAILED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-time-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-    }
-    initCopyCode();
-  }(window, document);
-</script>
- 
-<!-- CanvasBackground -->
-
-<script>
-  if (window.mermaid) {
-    mermaid.initialize({ theme: "forest" });
-  }
-</script>
+<!-- Custom -->
 
 
     
-  </div>
-</body>
 
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
 </html>
